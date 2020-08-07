@@ -1,7 +1,7 @@
+"""This module defines the routes for the authentication resources."""
 from django.urls import path
-
-from . import views
+from authentication.views import RegisterView
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('register/', RegisterView.as_view())
 ]

@@ -32,6 +32,8 @@ ALLOWED_HOSTS = ['foodstock-api.pytech.local']
 
 INSTALLED_APPS = [
     'authentication.apps.AuthenticationConfig',
+    'rest_framework',
+    'rest_framework.authtoken',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -119,3 +121,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# Rest framework
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication'
+    ]
+}

@@ -1,0 +1,1 @@
+"""This module manages the views of the categories app."""

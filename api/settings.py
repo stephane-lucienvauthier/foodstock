@@ -33,6 +33,7 @@ ALLOWED_HOSTS = ['foodstock-api.pytech.local']
 INSTALLED_APPS = [
     'authentication.apps.AuthenticationConfig',
     'categories.apps.CategoriesConfig',
+    'providers.apps.ProvidersConfig',
     'rest_framework',
     'rest_framework.authtoken',
     'django.contrib.admin',

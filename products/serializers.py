@@ -1,6 +1,6 @@
 """This module defines the serializers for the products app."""
 from rest_framework import serializers
-from products.models import Product
+from products.models import Product, Batch
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -23,3 +23,19 @@ class ProductSerializer(serializers.ModelSerializer):
 
         model = Product
         fields = ['id', 'label', 'unit', 'category', 'icon']
+
+
+class BatchSerializer(serializers.ModelSerializer):
+    """This class defines the serializer for the batches view."""
+
+    class Meta:
+        """
+         This class defines the validation metadata for the batches view.
+        
+        Attributes:
+            model (Model): The model linked to the serializer.
+            fields (list(str)): The field list expencted by the serializer.
+        """
+
+        model = Batch
+        fields = ['id', 'initial', 'current', 'price', 'purchase', 'limit']

@@ -1,6 +1,5 @@
 """This module manages the views of the categories app."""
-from rest_framework import generics
-from rest_framework import permissions
+from rest_framework import generics, permissions
 from categories.models import Category
 from categories.serializers import CategorySerializer
 
@@ -36,7 +35,7 @@ class CategoryView(generics.ListCreateAPIView):
 
 class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
     """
-    This class manages the view to create and list the categories.
+    This class manages the view to update and delete a category.
 
     Attributes:
         permission_classes (list(Permissions)): The options to access at this resource.

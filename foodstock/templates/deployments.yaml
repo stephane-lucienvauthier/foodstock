@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: foodstock-api-deployment
+  labels:
+    app: foodstock-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: foodstock-api
+  template:
+    metadata:
+      labels:
+        app: foodstock-api
+    spec:
+      containers:
+      - name: foodstock-api
+        image: stephanelucienvauthier/foodstock-api:0.1.0
+        

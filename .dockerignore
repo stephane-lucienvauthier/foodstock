@@ -4,3 +4,4 @@ Dockerfile.*
 README.md
 requirements.dev.txt
 .vscode
+foodstock

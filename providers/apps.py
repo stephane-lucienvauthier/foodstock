@@ -9,4 +9,5 @@ class ProvidersConfig(AppConfig):
     Attributes:
         name (str): The app name.
     """
+
     name = 'providers'

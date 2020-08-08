@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 class Provider(models.Model):
     """
-    This class defines the category model.
+    This class defines the provider model.
 
     Attributes:
         owner (User): The provider owner.

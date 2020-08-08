@@ -2,6 +2,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from categories.models import Category
+from providers.models import Provider
 
 
 class Product(models.Model):
@@ -50,6 +51,7 @@ class Batch(models.Model):
     Attributes:
         owner (User): The batch owner.
         product (Product): the linked product.
+        provider (Provider): The linked provider.
         initial (float):  The initial quantity.
         current (float): The current quantity.
         price (float): The Batch unit price.
@@ -59,6 +61,7 @@ class Batch(models.Model):
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, related_name='batches', on_delete=models.CASCADE)
+    provider = models.ForeignKey(Provider, on_delete=models.CASCADE)
     initial = models.FloatField(default=0.0)
     current = models.FloatField(default=0.0)
     price = models.FloatField(default=0.0)

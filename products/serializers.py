@@ -18,6 +18,29 @@ class BatchSerializer(serializers.ModelSerializer):
         model = Batch
         fields = ['id', 'initial', 'current', 'price', 'purchase', 'limit']
 
+
+class ProductUpdateSerializer(serializers.ModelSerializer):
+    """This class defines the serializer for the products view."""
+
+    def to_representation(self, obj):
+        """Format the representation to send result."""
+        representation = super(ProductUpdateSerializer, self).to_representation(obj)
+        representation['category'] = obj.category.label
+        return representation
+
+    class Meta:
+        """
+         This class defines the validation metadata for the products view.
+        
+        Attributes:
+            model (Model): The model linked to the serializer.
+            fields (list(str)): The field list expencted by the serializer.
+        """
+
+        model = Product
+        fields = ['id', 'label', 'unit', 'category', 'icon']
+
+
 class ProductSerializer(serializers.ModelSerializer):
     """This class defines the serializer for the products view."""
 

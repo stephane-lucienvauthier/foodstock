@@ -58,7 +58,7 @@ class Batch(models.Model):
     """
 
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, related_name='batches', on_delete=models.CASCADE)
     initial = models.FloatField(default=0.0)
     current = models.FloatField(default=0.0)
     price = models.FloatField(default=0.0)

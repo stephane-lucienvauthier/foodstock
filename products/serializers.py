@@ -6,6 +6,12 @@ from products.models import Product, Batch
 class BatchSerializer(serializers.ModelSerializer):
     """This class defines the serializer for the batches view."""
 
+    def to_representation(self, obj):
+        """Format the representation to send result."""
+        representation = super(BatchSerializer, self).to_representation(obj)
+        representation['provider'] = obj.provider.label
+        return representation
+
     class Meta:
         """
          This class defines the validation metadata for the batches view.
@@ -16,7 +22,7 @@ class BatchSerializer(serializers.ModelSerializer):
         """
 
         model = Batch
-        fields = ['id', 'initial', 'current', 'price', 'purchase', 'limit']
+        fields = ['id', 'initial', 'current', 'price', 'purchase', 'limit', 'provider']
 
 
 class ProductUpdateSerializer(serializers.ModelSerializer):

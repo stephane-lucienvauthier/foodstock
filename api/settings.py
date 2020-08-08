@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     'authentication.apps.AuthenticationConfig',
     'categories.apps.CategoriesConfig',
     'providers.apps.ProvidersConfig',
+    'products.apps.ProductsConfig',
     'rest_framework',
     'rest_framework.authtoken',
     'django.contrib.admin',

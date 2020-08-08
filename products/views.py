@@ -3,7 +3,7 @@ from rest_framework import generics, permissions, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from products.models import Product, Batch
-from products.serializers import ProductSerializer, BatchSerializer
+from products.serializers import ProductSerializer, ProductListSerializer, BatchSerializer
 
 
 class ProductView(generics.ListCreateAPIView):
@@ -24,7 +24,7 @@ class ProductView(generics.ListCreateAPIView):
     """
 
     permission_classes = [permissions.IsAuthenticated]
-    serializer_class = ProductSerializer
+    serializer_class = ProductListSerializer
 
     def get_queryset(self):
         """Return the category list of the owner."""

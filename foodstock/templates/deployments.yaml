@@ -50,7 +50,7 @@ spec:
             claimName: foodstock-pvc
       containers:
         - name: foodstock-api
-          image: stephanelucienvauthier/foodstock-api:0.1.1
+          image: stephanelucienvauthier/foodstock-api:0.1.2
           volumeMounts:
             - mountPath: "/usr/src/app/data"
               name: dbdata

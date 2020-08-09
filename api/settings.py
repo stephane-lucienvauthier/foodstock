@@ -25,7 +25,7 @@ SECRET_KEY = 'w5jd#h$zkj21l0#jerb)#n_k08q$=e4v!ne5%2egs6!t8!pl&*'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['foodstock-api.pytech.local']
+ALLOWED_HOSTS = ['foodstock-api.pytech.local', 'foodstock-api.pytech.fr']
 
 
 # Application definition

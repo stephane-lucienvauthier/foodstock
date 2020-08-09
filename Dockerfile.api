@@ -8,11 +8,11 @@ RUN apt-get update \
 WORKDIR /usr/src/app
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
-COPY api .
-COPY authentication .
-COPY categories .
-COPY products .
-COPY providers .
+COPY api ./api
+COPY authentication ./authentication
+COPY categories ./categories
+COPY products ./products
+COPY providers ./providers
 COPY manage.py .
 
 EXPOSE 8000

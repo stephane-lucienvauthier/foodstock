@@ -83,6 +83,7 @@ export default class App extends React.Component<props, state> {
     if (this.state.connected) {
       view = 
       <BottomNavigation className="bottomNavigation" onChange={this.navigationHandleChange} showLabels>
+        <BottomNavigationAction label="Categories" value="category" icon={<Icon>category</Icon>} />
         <BottomNavigationAction label="Log out" value="logout" icon={<Icon>exit_to_app</Icon>} />
       </BottomNavigation>
     } else {

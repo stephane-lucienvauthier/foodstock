@@ -32,6 +32,10 @@ export default class Api {
         }
 
         const response = await fetch(`${this.uri}/${resource}/`, { method: 'POST', headers: headers, body: JSON.stringify(body) })
-        return await response.json()
+        if (response.status === 200 || response.status === 201) {
+            return await response.json()    
+        } else {
+            return null
+        }
     }
 }

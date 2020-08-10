@@ -1,26 +1,45 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
+import Login from './login/Login'
+import Api from './services/Api'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+interface props { }
+interface state {
+  connected: boolean
 }
 
-export default App;
+export default class App extends React.Component<props, state> {
+
+  api: Api = new Api()
+
+  constructor(props: any, state: any) {
+    super(props)
+    this.state = {
+      connected: localStorage.getItem('user') !== null
+    }
+    this.login = this.login.bind(this)
+  }
+
+  async login(username: string, password: string): Promise<void> {
+    const response = await this.api.post('authentication/login', { username: username, password: password }, false)
+    if (response !== null) {
+      localStorage.setItem('user', JSON.stringify(response))
+      this.setState({ connected: true })
+    }
+  }
+
+  render(): JSX.Element {
+    let view;
+    if (this.state.connected) {
+      view = <h1>Connected</h1>
+    } else {
+      view = <Login onlogin={this.login} />
+    }
+
+    return (
+      <div className="App">
+        {view}
+      </div>
+    )
+  }
+}

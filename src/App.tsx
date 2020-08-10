@@ -4,12 +4,14 @@ import Login from './login/Login'
 import Api from './services/Api'
 import Category from './models/Category'
 import Provider from './models/Provider'
+import Product from './models/Product'
 
 interface props { }
 interface state {
   connected: boolean,
   categories: Category[],
-  providers: Provider[]
+  providers: Provider[],
+  products: Product[]
 }
 
 export default class App extends React.Component<props, state> {
@@ -22,10 +24,12 @@ export default class App extends React.Component<props, state> {
       connected: localStorage.getItem('user') !== null,
       categories: [],
       providers: [],
+      products: []
     }
     this.login = this.login.bind(this)
     this.getCategories = this.getCategories.bind(this)
     this.getProviders = this.getProviders.bind(this)
+    this.getProducts = this.getProducts.bind(this)
   }
 
   async componentDidMount(): Promise<void>
@@ -38,6 +42,7 @@ export default class App extends React.Component<props, state> {
   async getLists(): Promise<void> {
     await this.getCategories()
     await this.getProviders()
+    await this.getProducts()
   }
 
   async getCategories(): Promise<void> {
@@ -46,6 +51,10 @@ export default class App extends React.Component<props, state> {
 
   async getProviders(): Promise<void> {
     this.setState({ providers: await this.api.get('providers') })
+  }
+
+  async getProducts(): Promise<void> {
+    this.setState({ products: await this.api.get('products') })
   }
 
   async login(username: string, password: string): Promise<void> {

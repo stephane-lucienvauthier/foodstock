@@ -1,4 +1,7 @@
 import React from 'react';
+import BottomNavigation from '@material-ui/core/BottomNavigation';
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
+import Icon from '@material-ui/core/Icon';
 import './App.css';
 import Login from './login/Login'
 import Api from './services/Api'
@@ -32,8 +35,7 @@ export default class App extends React.Component<props, state> {
     this.getProducts = this.getProducts.bind(this)
   }
 
-  async componentDidMount(): Promise<void>
-  {
+  async componentDidMount(): Promise<void> {
     if (this.state.connected) {
       this.getLists()
     }
@@ -66,10 +68,23 @@ export default class App extends React.Component<props, state> {
     }
   }
 
+  navigationHandleChange(event: React.ChangeEvent<{}>, newValue: string): void {
+    switch(newValue) {
+      case 'logout':
+        localStorage.clear()
+        window.location.reload(false);
+        break
+      default:
+    }
+  };
+
   render(): JSX.Element {
     let view;
     if (this.state.connected) {
-      view = <h1>Connected</h1>
+      view = 
+      <BottomNavigation className="bottomNavigation" onChange={this.navigationHandleChange} showLabels>
+        <BottomNavigationAction label="Log out" value="logout" icon={<Icon>exit_to_app</Icon>} />
+      </BottomNavigation>
     } else {
       view = <Login onlogin={this.login} />
     }

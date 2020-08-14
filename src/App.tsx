@@ -4,12 +4,11 @@ import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import Icon from '@material-ui/core/Icon';
 import './App.css';
 import Api from './services/Api'
-import Category from './models/Category'
+import { Category, CategoryAdd } from './apps/categories/models'
 import Provider from './models/Provider'
 import Product from './models/Product'
 import Login from './login/Login'
-import Categories from './components/Categories'
-
+import Categories from './apps/categories/Categories'
 
 interface props { }
 interface state {
@@ -39,6 +38,7 @@ export default class App extends React.Component<props, state> {
     this.getProducts = this.getProducts.bind(this)
     this.navigationHandleChange = this.navigationHandleChange.bind(this)
     this.closeCategories = this.closeCategories.bind(this)
+    this.onCategoryAdd = this.onCategoryAdd.bind(this)
   }
 
   async componentDidMount(): Promise<void> {
@@ -74,9 +74,15 @@ export default class App extends React.Component<props, state> {
     }
   }
 
-  async closeCategories(): Promise<void> {
+  closeCategories(): void {
     this.setState({ showCategories: false })
-    await this.getCategories()
+  }
+
+  async onCategoryAdd(category: CategoryAdd): Promise<void> {
+    const response = await this.api.post('categories', category)
+    if (response !== null) {
+      await this.getCategories()
+    }
   }
 
   navigationHandleChange(event: React.ChangeEvent<{}>, newValue: string): void {
@@ -98,7 +104,7 @@ export default class App extends React.Component<props, state> {
       view =
         <div>
           <div>
-            <Categories open={this.state.showCategories} onClose={ this.closeCategories } />
+            <Categories open={this.state.showCategories} onClose={this.closeCategories} categories= {this.state.categories} onAdd={this.onCategoryAdd} />
           </div>
           <BottomNavigation className="bottomNavigation" onChange={this.navigationHandleChange} showLabels>
             <BottomNavigationAction label="Categories" value="categories" icon={<Icon>category</Icon>} />

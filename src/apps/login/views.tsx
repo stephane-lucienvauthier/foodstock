@@ -1,38 +1,35 @@
-import React from 'react';
-import Button from '@material-ui/core/Button';
-import Container from '@material-ui/core/Container';
-import Paper from '@material-ui/core/Paper';
-import TextField from '@material-ui/core/TextField';
+import React from 'react'
+import Button from '@material-ui/core/Button'
+import Container from '@material-ui/core/Container'
+import Paper from '@material-ui/core/Paper'
+import TextField from '@material-ui/core/TextField'
 import { LoginProps, LoginState } from './interfaces'
 import './style.css';
 
-export default class Login extends React.Component<LoginProps, LoginState> {
+export default class LoginView extends React.Component<LoginProps, LoginState> {
   constructor(props: LoginProps, state: LoginState) {
     super(props)
     this.state = {
-      username: '',
-      password: '',
-      disableLogin: true
+      login: {username: '', password: ''}
     }
-    this.handleLogin = this.handleLogin.bind(this)
-    this.handleForm = this.handleForm.bind(this)
+    this.login = this.login.bind(this)
+    this.formChange = this.formChange.bind(this)
   }
 
-  handleForm(event: any): void {
+  formChange(event: any): void {
     switch (event.target.name) {
       case 'username':
-        this.setState({username: event.target.value})
+        this.setState({ login: { username: event.target.value, password: this.state.login.password } })
         break
       case 'password':
-        this.setState({password: event.target.value})
+        this.setState({ login: { username: this.state.login.username, password: event.target.value} })
         break
       default:
     }
-    this.setState({disableLogin: (this.state.username === "" || this.state.password === "")});
   }
 
-  handleLogin(): void {
-    this.props.onlogin(this.state.username, this.state.password)
+  login(): void {
+    this.props.onlogin(this.state.login)
   }
 
   render(): JSX.Element {
@@ -41,10 +38,10 @@ export default class Login extends React.Component<LoginProps, LoginState> {
         <Paper elevation={1} className="loginPaper">
           <h1>Foodstock</h1>
         <form>
-          <TextField className="textfield" label="Username" name="username" value={this.state.username} onChange={this.handleForm} />
-          <TextField label="Password" type="password" name="password" value={this.state.password} onChange={this.handleForm} />
+          <TextField className="textfield" label="Username" name="username" value={this.state.login.username} onChange={this.formChange} />
+          <TextField label="Password" type="password" name="password" value={this.state.login.password} onChange={this.formChange} />
           <div className="actions">
-            <Button type="button" variant="outlined" color="primary" onClick={this.handleLogin} disabled={this.state.disableLogin}>Login</Button>
+            <Button type="button" variant="outlined" color="primary" onClick={this.login}>Login</Button>
           </div>
         </form>
         </Paper>

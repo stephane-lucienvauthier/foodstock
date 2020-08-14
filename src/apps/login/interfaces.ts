@@ -1,9 +1,9 @@
+import { Login } from './models'
+
 export interface LoginProps {
-    onlogin: any
+    onlogin(login: Login): void
 }
 
 export interface LoginState {
-    username: string
-    password: string
-    disableLogin: boolean
+    login: Login
 }

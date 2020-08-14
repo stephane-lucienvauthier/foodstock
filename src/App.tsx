@@ -5,10 +5,11 @@ import Icon from '@material-ui/core/Icon';
 import './App.css';
 import Api from './services/Api'
 import { Category, CategoryAdd } from './apps/categories/models'
-import Provider from './models/Provider'
+import { Provider, ProviderAdd } from './apps/providers/models'
 import Product from './models/Product'
 import Login from './login/Login'
 import Categories from './apps/categories/Categories'
+import Providers from './apps/providers/Providers'
 
 interface props { }
 interface state {
@@ -16,7 +17,8 @@ interface state {
   categories: Category[],
   providers: Provider[],
   products: Product[],
-  showCategories: boolean
+  showCategories: boolean,
+  showProviders: boolean
 }
 
 export default class App extends React.Component<props, state> {
@@ -30,15 +32,18 @@ export default class App extends React.Component<props, state> {
       categories: [],
       providers: [],
       products: [],
-      showCategories: false
+      showCategories: false,
+      showProviders: false
     }
     this.login = this.login.bind(this)
     this.getCategories = this.getCategories.bind(this)
     this.getProviders = this.getProviders.bind(this)
     this.getProducts = this.getProducts.bind(this)
-    this.navigationHandleChange = this.navigationHandleChange.bind(this)
+    this.navigationChange = this.navigationChange.bind(this)
     this.closeCategories = this.closeCategories.bind(this)
+    this.closeProviders = this.closeProviders.bind(this)
     this.onCategoryAdd = this.onCategoryAdd.bind(this)
+    this.onProviderAdd = this.onProviderAdd.bind(this)
   }
 
   async componentDidMount(): Promise<void> {
@@ -78,6 +83,10 @@ export default class App extends React.Component<props, state> {
     this.setState({ showCategories: false })
   }
 
+  closeProviders(): void {
+    this.setState({ showProviders: false })
+  }
+
   async onCategoryAdd(category: CategoryAdd): Promise<void> {
     const response = await this.api.post('categories', category)
     if (response !== null) {
@@ -85,7 +94,14 @@ export default class App extends React.Component<props, state> {
     }
   }
 
-  navigationHandleChange(event: React.ChangeEvent<{}>, newValue: string): void {
+  async onProviderAdd(provider: ProviderAdd): Promise<void> {
+    const response = await this.api.post('providers', provider)
+    if (response !== null) {
+      await this.getProviders()
+    }
+  }
+
+  navigationChange(event: React.ChangeEvent<{}>, newValue: string): void {
     switch (newValue) {
       case 'logout':
         localStorage.clear()
@@ -93,6 +109,9 @@ export default class App extends React.Component<props, state> {
         break
       case 'categories':
         this.setState({ showCategories: true })
+        break
+      case 'providers':
+        this.setState({ showProviders: true })
         break
       default:
     }
@@ -104,10 +123,12 @@ export default class App extends React.Component<props, state> {
       view =
         <div>
           <div>
-            <Categories open={this.state.showCategories} onClose={this.closeCategories} categories= {this.state.categories} onAdd={this.onCategoryAdd} />
+            <Categories open={this.state.showCategories} onClose={this.closeCategories} categories={this.state.categories} onAdd={this.onCategoryAdd} />
+            <Providers open={this.state.showProviders} onClose={this.closeProviders} providers={this.state.providers} onAdd={this.onProviderAdd} />
           </div>
-          <BottomNavigation className="bottomNavigation" onChange={this.navigationHandleChange} showLabels>
+          <BottomNavigation className="bottomNavigation" onChange={this.navigationChange} showLabels>
             <BottomNavigationAction label="Categories" value="categories" icon={<Icon>category</Icon>} />
+            <BottomNavigationAction label="Providers" value="providers" icon={<Icon>business</Icon>} />
             <BottomNavigationAction label="Log out" value="logout" icon={<Icon>exit_to_app</Icon>} />
           </BottomNavigation>
         </div>

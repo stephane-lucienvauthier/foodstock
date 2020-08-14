@@ -5,21 +5,20 @@ import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
 import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
-import { Category, CategoryAdd } from './models'
-import './Categories.css';
-import CategoryAddForm from './dumbs/CategoryAddForm';
-import CategoryList from './dumbs/CategoryList';
+import { Provider, ProviderAdd } from './models'
+import './Providers.css';
+import ProviderAddForm from './dumbs/ProviderAddForm';
 
 interface props {
   open: boolean
   onClose: any
-  categories: Category[]
-  onAdd(category: CategoryAdd): void
+  providers: Provider[]
+  onAdd(provider: ProviderAdd): void
 }
 
 interface state {}
 
-export default class Categories extends React.Component<props, state> {
+export default class Providers extends React.Component<props, state> {
   constructor(props: any, state: any) {
     super(props)
     this.state = {}
@@ -31,8 +30,8 @@ export default class Categories extends React.Component<props, state> {
     this.props.onClose()
   }
 
-  onAdd(category: CategoryAdd): void {
-    this.props.onAdd(category)
+  onAdd(provider: ProviderAdd): void {
+    this.props.onAdd(provider)
   }
 
   render(): JSX.Element {
@@ -41,7 +40,7 @@ export default class Categories extends React.Component<props, state> {
         <AppBar className="appBar">
           <Toolbar>
             <Typography variant="h6" className="title">
-              Categories
+              Providers
             </Typography>
             <IconButton edge="start" color="inherit" onClick={this.close} aria-label="close">
               <CloseIcon />
@@ -49,8 +48,7 @@ export default class Categories extends React.Component<props, state> {
           </Toolbar>
         </AppBar>
         <div className="dialogBody">
-          <CategoryAddForm onAdd={this.onAdd} />
-          <CategoryList categories={this.props.categories} />
+          <ProviderAddForm onAdd={this.onAdd} />
         </div>
       </Dialog>
     )

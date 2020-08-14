@@ -10,39 +10,39 @@ interface props {
 }
 
 interface state {
-  categoryLabel: string
+  category: CategoryAdd
 }
 
 export default class CategoryAddForm extends React.Component<props, state> {
   constructor(props: any, state: any) {
     super(props)
     this.state = {
-      categoryLabel: ""
+      category: { label: "" }
     }
-    this.labelChange = this.labelChange.bind(this)
+    this.change = this.change.bind(this)
     this.add = this.add.bind(this)
   }
 
-  labelChange(event: any): void {
-    this.setState({ categoryLabel: event.target.value })
+  change(event: any): void {
+    this.setState({ category: { label: event.target.value } })
   }
 
   add(): void {
-    this.props.onAdd({ label: this.state.categoryLabel })
+    this.props.onAdd(this.state.category)
   }
 
   render(): JSX.Element {
     return (
-        <form>
-          <Grid container spacing={1}>
-            <Grid item xs={11}>
-              <TextField className="textfield" label="label" name="label" onChange={this.labelChange} />
-            </Grid>
-            <Grid item xs={1}>
-              <Button type="button" variant="contained" color="primary" onClick={this.add}>Add</Button>
-            </Grid>
+      <form>
+        <Grid container spacing={1}>
+          <Grid item xs={11}>
+            <TextField className="textfield" label="label" name="label" onChange={this.change} />
           </Grid>
-        </form>
+          <Grid item xs={1}>
+            <Button type="button" variant="contained" color="primary" onClick={this.add}>Add</Button>
+          </Grid>
+        </Grid>
+      </form>
     )
   }
 }

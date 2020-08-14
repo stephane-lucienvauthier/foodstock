@@ -2,16 +2,16 @@ import React from 'react'
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
-import { Category } from '../models'
-import './CategoryList.css';
+import { Provider } from '../models'
+import './ProviderList.css';
 
 interface props {
-    categories: Category[]
+    providers: Provider[]
 }
 
 interface state { }
 
-export default class CategoryList extends React.Component<props, state> {
+export default class ProviderList extends React.Component<props, state> {
     constructor(props: any, state: any) {
         super(props)
         this.state = {}
@@ -20,9 +20,9 @@ export default class CategoryList extends React.Component<props, state> {
     render(): JSX.Element {
         return (
             <List component="nav">
-                {this.props.categories.map((category) => {
+                {this.props.providers.map((provider) => {
                     return <ListItem button>
-                        <ListItemText primary={category.label} />
+                        <ListItemText primary={provider.label} />
                     </ListItem>
                 })}
             </List>

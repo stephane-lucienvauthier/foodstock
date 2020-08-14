@@ -47,10 +47,9 @@ export default class Login extends React.Component<props, state> {
   render(): JSX.Element {
     return (
       <Container maxWidth="sm" className="Login">
-        <Paper elevation={1}>
+        <Paper elevation={1} className="loginPaper">
           <h1>Foodstock</h1>
         <form>
-          
           <TextField className="textfield" label="Username" name="username" value={this.state.username} onChange={this.handleForm} />
           <TextField label="Password" type="password" name="password" value={this.state.password} onChange={this.handleForm} />
           <div className="actions">

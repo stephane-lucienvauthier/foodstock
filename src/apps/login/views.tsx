@@ -3,20 +3,11 @@ import Button from '@material-ui/core/Button';
 import Container from '@material-ui/core/Container';
 import Paper from '@material-ui/core/Paper';
 import TextField from '@material-ui/core/TextField';
-import './Login.css';
+import { LoginProps, LoginState } from './interfaces'
+import './style.css';
 
-interface props {
-  onlogin: any
-}
-
-interface state {
-  username: string
-  password: string
-  disableLogin: boolean
-}
-
-export default class Login extends React.Component<props, state> {
-  constructor(props: any, state: any) {
+export default class Login extends React.Component<LoginProps, LoginState> {
+  constructor(props: LoginProps, state: LoginState) {
     super(props)
     this.state = {
       username: '',

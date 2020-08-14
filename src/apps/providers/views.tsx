@@ -2,19 +2,34 @@ import React from 'react'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
 import Grid from '@material-ui/core/Grid'
-import { ProviderAdd } from '../models'
-import './ProviderAddForm.css';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemText from '@material-ui/core/ListItemText';
+import { ProviderListProps, ProviderListState, ProviderAddFormProps, ProviderAddFormState, ProvidersProps, ProvidersState } from './interfaces'
+import { ProviderAdd } from './models'
+import './style.css'
 
-interface props {
-    onAdd(provider: ProviderAdd): void
+class ProviderList extends React.Component<ProviderListProps, ProviderListState> {
+    constructor(props: ProviderListProps, state: ProviderListState) {
+        super(props)
+        this.state = {}
+    }
+
+    render(): JSX.Element {
+        return (
+            <List component="nav">
+                {this.props.providers.map((provider) => {
+                    return <ListItem button>
+                        <ListItemText primary={provider.label} />
+                    </ListItem>
+                })}
+            </List>
+        )
+    }
 }
 
-interface state {
-    provider: ProviderAdd
-}
-
-export default class ProviderAddForm extends React.Component<props, state> {
-    constructor(props: any, state: any) {
+class ProviderAddForm extends React.Component<ProviderAddFormProps, ProviderAddFormState> {
+    constructor(props: ProviderAddFormProps, state: ProviderAddFormState) {
         super(props)
         this.state = {
             provider: { label: "", address: "", city: "", zipcode: "", phone: "" }
@@ -112,6 +127,27 @@ export default class ProviderAddForm extends React.Component<props, state> {
                     </Grid>
                 </Grid>
             </form>
+        )
+    }
+}
+
+export default class Providers extends React.Component<ProvidersProps, ProvidersState> {
+    constructor(props: ProvidersProps, state: ProvidersState) {
+        super(props)
+        this.state = {}
+        this.onAdd = this.onAdd.bind(this)
+    }
+
+    onAdd(provider: ProviderAdd): void {
+        this.props.onAdd(provider)
+    }
+
+    render(): JSX.Element {
+        return (
+            <div className="providerView">
+                <ProviderAddForm onAdd={this.onAdd} />
+                <ProviderList providers={this.props.providers} />
+            </div>
         )
     }
 }

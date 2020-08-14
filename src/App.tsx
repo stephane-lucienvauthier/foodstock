@@ -3,11 +3,11 @@ import './App.css';
 import Api from './services/Api'
 import { Category, CategoryAdd } from './apps/categories/models'
 import { Provider, ProviderAdd } from './apps/providers/models'
-import Menu from './apps/menu/Menu'
-import Product from './models/Product'
-import Login from './apps/login/Login'
-import Categories from './apps/categories/Categories'
-import Providers from './apps/providers/Providers'
+import Menu from './apps/menu/views'
+import { Product } from './apps/products/models'
+import Login from './apps/login/views'
+import Categories from './apps/categories/views'
+import Providers from './apps/providers/views'
 
 interface props { }
 interface state {

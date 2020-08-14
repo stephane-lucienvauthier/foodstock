@@ -1,13 +1,11 @@
 import React from 'react';
-import BottomNavigation from '@material-ui/core/BottomNavigation';
-import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
-import Icon from '@material-ui/core/Icon';
 import './App.css';
 import Api from './services/Api'
 import { Category, CategoryAdd } from './apps/categories/models'
 import { Provider, ProviderAdd } from './apps/providers/models'
+import Menu from './apps/menu/Menu'
 import Product from './models/Product'
-import Login from './login/Login'
+import Login from './apps/login/Login'
 import Categories from './apps/categories/Categories'
 import Providers from './apps/providers/Providers'
 
@@ -17,8 +15,7 @@ interface state {
   categories: Category[],
   providers: Provider[],
   products: Product[],
-  showCategories: boolean,
-  showProviders: boolean
+  currentView: string
 }
 
 export default class App extends React.Component<props, state> {
@@ -32,16 +29,13 @@ export default class App extends React.Component<props, state> {
       categories: [],
       providers: [],
       products: [],
-      showCategories: false,
-      showProviders: false
+      currentView: 'products'
     }
+    this.router = this.router.bind(this)
     this.login = this.login.bind(this)
     this.getCategories = this.getCategories.bind(this)
     this.getProviders = this.getProviders.bind(this)
     this.getProducts = this.getProducts.bind(this)
-    this.navigationChange = this.navigationChange.bind(this)
-    this.closeCategories = this.closeCategories.bind(this)
-    this.closeProviders = this.closeProviders.bind(this)
     this.onCategoryAdd = this.onCategoryAdd.bind(this)
     this.onProviderAdd = this.onProviderAdd.bind(this)
   }
@@ -79,14 +73,6 @@ export default class App extends React.Component<props, state> {
     }
   }
 
-  closeCategories(): void {
-    this.setState({ showCategories: false })
-  }
-
-  closeProviders(): void {
-    this.setState({ showProviders: false })
-  }
-
   async onCategoryAdd(category: CategoryAdd): Promise<void> {
     const response = await this.api.post('categories', category)
     if (response !== null) {
@@ -101,45 +87,45 @@ export default class App extends React.Component<props, state> {
     }
   }
 
-  navigationChange(event: React.ChangeEvent<{}>, newValue: string): void {
-    switch (newValue) {
-      case 'logout':
-        localStorage.clear()
-        window.location.reload(false);
-        break
-      case 'categories':
-        this.setState({ showCategories: true })
-        break
-      case 'providers':
-        this.setState({ showProviders: true })
-        break
-      default:
+  router(route: string): void {
+    if (route === 'logout') {
+      localStorage.clear()
+      window.location.reload(false);
+    } else {
+      this.setState({ currentView: route })
     }
   }
 
   render(): JSX.Element {
-    let view;
-    if (this.state.connected) {
-      view =
-        <div>
-          <div>
-            <Categories open={this.state.showCategories} onClose={this.closeCategories} categories={this.state.categories} onAdd={this.onCategoryAdd} />
-            <Providers open={this.state.showProviders} onClose={this.closeProviders} providers={this.state.providers} onAdd={this.onProviderAdd} />
-          </div>
-          <BottomNavigation className="bottomNavigation" onChange={this.navigationChange} showLabels>
-            <BottomNavigationAction label="Categories" value="categories" icon={<Icon>category</Icon>} />
-            <BottomNavigationAction label="Providers" value="providers" icon={<Icon>business</Icon>} />
-            <BottomNavigationAction label="Log out" value="logout" icon={<Icon>exit_to_app</Icon>} />
-          </BottomNavigation>
-        </div>
-
-    } else {
-      view = <Login onlogin={this.login} />
-    }
-
     return (
       <div className="App">
-        {view}
+        {(() => {
+          if (this.state.connected) {
+            switch (this.state.currentView) {
+              case 'products':
+                return <React.Fragment>
+                  Products
+                  <Menu onRouter={this.router} />
+                  </React.Fragment>
+              case 'categories':
+                return <React.Fragment>
+                  <Categories categories={this.state.categories} onAdd={this.onCategoryAdd} />
+                  <Menu onRouter={this.router} />
+                </React.Fragment>
+              case 'providers':
+                return <React.Fragment>
+                  <Providers providers={this.state.providers} onAdd={this.onProviderAdd} />
+                  <Menu onRouter={this.router} />
+                </React.Fragment>
+
+              default:
+                return null;
+            }
+
+          } else {
+            return <Login onlogin={this.login} />
+          }
+        })()}
       </div>
     )
   }

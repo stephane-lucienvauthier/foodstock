@@ -1,13 +1,4 @@
-.appBar {
-    position: relative;
-}
-
-.title {
-    margin-left: 2em;
-    flex: 1;
-}
-
-.dialogBody {
-    margin: 6em auto 0 auto;
+.providerView {
+    margin: 0 auto;
     width:80%;
 }

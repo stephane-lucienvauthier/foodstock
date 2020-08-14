@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import { Category, CategoryAdd } from './models'
 import './Categories.css';
 import CategoryAddForm from './dumbs/CategoryAddForm';
+import CategoryList from './dumbs/CategoryList';
 
 interface props {
   open: boolean
@@ -55,6 +56,7 @@ export default class Categories extends React.Component<props, state> {
         </AppBar>
         <div className="dialogBody">
           <CategoryAddForm onAdd={this.onAdd} />
+          <CategoryList categories={this.props.categories} />
         </div>
       </Dialog>
     )

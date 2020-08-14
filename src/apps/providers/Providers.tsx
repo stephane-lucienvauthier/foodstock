@@ -8,6 +8,7 @@ import Typography from '@material-ui/core/Typography';
 import { Provider, ProviderAdd } from './models'
 import './Providers.css';
 import ProviderAddForm from './dumbs/ProviderAddForm';
+import ProviderList from './dumbs/ProviderList';
 
 interface props {
   open: boolean
@@ -49,6 +50,7 @@ export default class Providers extends React.Component<props, state> {
         </AppBar>
         <div className="dialogBody">
           <ProviderAddForm onAdd={this.onAdd} />
+          <ProviderList providers={this.props.providers} />
         </div>
       </Dialog>
     )

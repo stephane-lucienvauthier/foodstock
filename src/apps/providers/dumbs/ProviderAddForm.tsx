@@ -92,20 +92,20 @@ export default class ProviderAddForm extends React.Component<props, state> {
         return (
             <form>
                 <Grid container spacing={1}>
-                    <Grid item xs={12}>
+                    <Grid item xs={6}>
                         <TextField className="textfield" label="label" name="label" onChange={this.change} />
                     </Grid>
-                    <Grid item xs={12}>
+                    <Grid item xs={6}>
+                        <TextField className="textfield" label="phone" name="phone" onChange={this.change} />
+                    </Grid>
+                    <Grid item xs={6}>
                         <TextField className="textfield" label="address" name="address" onChange={this.change} />
                     </Grid>
-                    <Grid item xs={12}>
-                        <TextField className="textfield" label="city" name="city" onChange={this.change} />
-                    </Grid>
-                    <Grid item xs={12}>
+                    <Grid item xs={2}>
                         <TextField className="textfield" label="zipcode" name="zipcode" onChange={this.change} />
                     </Grid>
-                    <Grid item xs={12}>
-                        <TextField className="textfield" label="phone" name="phone" onChange={this.change} />
+                    <Grid item xs={3}>
+                        <TextField className="textfield" label="city" name="city" onChange={this.change} />
                     </Grid>
                     <Grid item xs={1}>
                         <Button type="button" variant="contained" color="primary" onClick={this.add}>Add</Button>

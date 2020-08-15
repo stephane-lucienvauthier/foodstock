@@ -11,6 +11,7 @@ import Box from '@material-ui/core/Box'
 import IconButton from '@material-ui/core/IconButton'
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
+import { ProductsMenu } from '../menu/views'
 import { ProductsProps, ProductsState, ProductListProps, ProductListState, ProductListRowProps, ProductListRowState } from './interfaces'
 import './style.css';
 
@@ -110,13 +111,19 @@ export default class Products extends React.Component<ProductsProps, ProductsSta
   constructor(props: ProductsProps, state: ProductsState) {
     super(props)
     this.state = {}
+    this.router = this.router.bind(this)
+  }
+
+  router(route: string): void {
+    console.log(route)
   }
 
   render(): JSX.Element {
     return (
-      <div className="productView">
+      <>
+        <ProductsMenu onRouter={this.router} />
         <ProductList products={this.props.products} />
-      </div>
+      </>
     )
   }
 }

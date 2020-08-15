@@ -1,28 +1,24 @@
 import React from 'react';
-import './App.css';
-import Api from './services/Api'
-import { Category, CategoryAdd } from './apps/categories/models'
-import { Provider, ProviderAdd } from './apps/providers/models'
-import Menu from './apps/menu/Menu'
-import Product from './models/Product'
-import Login from './apps/login/Login'
-import Categories from './apps/categories/Categories'
-import Providers from './apps/providers/Providers'
+import { AppProps, AppState } from './interfaces'
+import './style.css';
+import { LoginApi, CategoriesApi, ProvidersApi, ProductsApi } from './api'
+import { Category, CategoryAdd } from '../categories/models'
+import { Provider, ProviderAdd } from '../providers/models'
+import { Login, Authentication } from '../login/models'
+import LoginView from '../login/views'
+import Menu from '../menu/views'
+import Categories from '../categories/views'
+import Providers from '../providers/views'
+import Products from '../products/views'
 
-interface props { }
-interface state {
-  connected: boolean,
-  categories: Category[],
-  providers: Provider[],
-  products: Product[],
-  currentView: string
-}
+export default class App extends React.Component<AppProps, AppState> {
 
-export default class App extends React.Component<props, state> {
+  loginApi: LoginApi = new LoginApi()
+  categoriesApi: CategoriesApi = new CategoriesApi()
+  providersApi: ProvidersApi = new ProvidersApi()
+  productsApi: ProductsApi = new ProductsApi()
 
-  api: Api = new Api()
-
-  constructor(props: any, state: any) {
+  constructor(props: AppProps, state: AppState) {
     super(props)
     this.state = {
       connected: localStorage.getItem('user') !== null,
@@ -42,46 +38,44 @@ export default class App extends React.Component<props, state> {
 
   async componentDidMount(): Promise<void> {
     if (this.state.connected) {
-      this.getLists()
+      await this.getCategories()
+      await this.getProviders()
+      await this.getProducts()
     }
   }
 
-  async getLists(): Promise<void> {
-    await this.getCategories()
-    await this.getProviders()
-    await this.getProducts()
-  }
-
-  async getCategories(): Promise<void> {
-    this.setState({ categories: await this.api.get('categories') })
-  }
-
-  async getProviders(): Promise<void> {
-    this.setState({ providers: await this.api.get('providers') })
-  }
-
-  async getProducts(): Promise<void> {
-    this.setState({ products: await this.api.get('products') })
-  }
-
-  async login(username: string, password: string): Promise<void> {
-    const response = await this.api.post('authentication/login', { username: username, password: password }, false)
+  async login(login: Login): Promise<void> {
+    const response: Authentication = await this.loginApi.authenticate(login)
     if (response !== null) {
       localStorage.setItem('user', JSON.stringify(response))
       this.setState({ connected: true })
-      this.getLists()
+      await this.getCategories()
+      await this.getProviders()
+      await this.getProducts()
     }
   }
 
+  async getCategories(): Promise<void> {
+    this.setState({ categories: await this.categoriesApi.list() })
+  }
+
+  async getProviders(): Promise<void> {
+    this.setState({ providers: await this.providersApi.list() })
+  }
+
+  async getProducts(): Promise<void> {
+    this.setState({ products: await this.productsApi.list() })
+  }
+
   async onCategoryAdd(category: CategoryAdd): Promise<void> {
-    const response = await this.api.post('categories', category)
+    const response: Category[] = await this.categoriesApi.add(category)
     if (response !== null) {
       await this.getCategories()
     }
   }
 
   async onProviderAdd(provider: ProviderAdd): Promise<void> {
-    const response = await this.api.post('providers', provider)
+    const response: Provider[] = await this.providersApi.add(provider)
     if (response !== null) {
       await this.getProviders()
     }
@@ -104,9 +98,9 @@ export default class App extends React.Component<props, state> {
             switch (this.state.currentView) {
               case 'products':
                 return <React.Fragment>
-                  Products
+                  <Products products={this.state.products} />
                   <Menu onRouter={this.router} />
-                  </React.Fragment>
+                </React.Fragment>
               case 'categories':
                 return <React.Fragment>
                   <Categories categories={this.state.categories} onAdd={this.onCategoryAdd} />
@@ -117,13 +111,11 @@ export default class App extends React.Component<props, state> {
                   <Providers providers={this.state.providers} onAdd={this.onProviderAdd} />
                   <Menu onRouter={this.router} />
                 </React.Fragment>
-
               default:
                 return null;
             }
-
           } else {
-            return <Login onlogin={this.login} />
+            return <LoginView onlogin={this.login} />
           }
         })()}
       </div>

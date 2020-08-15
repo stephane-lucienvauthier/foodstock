@@ -1,4 +1,9 @@
-export default class Api {
+import { Login, Authentication } from '../login/models'
+import { Category, CategoryAdd } from '../categories/models'
+import { Provider, ProviderAdd } from '../providers/models'
+import { Product } from '../products/models'
+
+class Api {
     uri: string = process.env.REACT_APP_API_URI!
 
     async get(resource: string, queries: any = {}): Promise<any> {
@@ -37,5 +42,36 @@ export default class Api {
         } else {
             return null
         }
+    }
+}
+
+export class LoginApi extends Api {
+    async authenticate(login: Login): Promise<Authentication> {
+        return await this.post('authentication/login', login, false)
+    }
+}
+export class CategoriesApi extends Api {
+    async list(): Promise<Category[]> {
+        return await this.get('categories')
+    }
+
+    async add(category: CategoryAdd): Promise<Category[]> {
+        return await this.post('categories', category)
+    }
+}
+
+export class ProvidersApi extends Api {
+    async list(): Promise<Provider[]> {
+        return await this.get('providers')
+    }
+
+    async add(provider: ProviderAdd): Promise<Provider[]> {
+        return await this.post('providers', provider)
+    }
+}
+
+export class ProductsApi extends Api {
+    async list(): Promise<Product[]> {
+        return await this.get('products')
     }
 }

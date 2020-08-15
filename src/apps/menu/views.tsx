@@ -2,16 +2,11 @@ import React from 'react';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import Icon from '@material-ui/core/Icon';
-import './Menu.css';
+import { MenuProps, MenuState } from './interfaces'
+import './style.css';
 
-interface props {
-    onRouter(route: string): void
-}
-
-interface state { }
-
-export default class Menu extends React.Component<props, state> {
-    constructor(props: any, state: any) {
+export default class Menu extends React.Component<MenuProps, MenuState> {
+    constructor(props: MenuProps, state: MenuState) {
         super(props)
         this.state = {}
         this.navigationChange = this.navigationChange.bind(this)

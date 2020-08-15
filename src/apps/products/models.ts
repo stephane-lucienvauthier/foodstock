@@ -16,3 +16,9 @@ export interface Product {
     icon: String,
     batches: Batch[]
 }
+
+export interface ProductAdd {
+    label: string,
+    unit: string,
+    category: number
+}

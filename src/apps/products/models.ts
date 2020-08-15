@@ -13,6 +13,6 @@ export interface Product {
     label: string,
     unit: string,
     category: string,
-    icin: String,
+    icon: String,
     bacthes: Batch[]
 }

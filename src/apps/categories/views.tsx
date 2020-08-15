@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
@@ -11,20 +11,20 @@ import './style.css';
 
 class CategoryList extends React.Component<CategoryListProps, CategoryListState> {
   constructor(props: CategoryListProps, state: CategoryListState) {
-      super(props)
-      this.state = {}
+    super(props)
+    this.state = {}
   }
 
   render(): JSX.Element {
-      return (
-          <List component="nav">
-              {this.props.categories.map((category) => {
-                  return <ListItem button>
-                      <ListItemText primary={category.label} />
-                  </ListItem>
-              })}
-          </List>
-      )
+    return (
+      <List component="nav">
+        {this.props.categories.map((category) => {
+          return <ListItem button key={category.id}>
+            <ListItemText primary={category.label} />
+          </ListItem>
+        })}
+      </List>
+    )
   }
 }
 
@@ -75,10 +75,10 @@ export default class Categories extends React.Component<CategoriesProps, Categor
 
   render(): JSX.Element {
     return (
-        <div className="categoryView">
-          <CategoryAddForm onAdd={this.onAdd} />
-          <CategoryList categories={this.props.categories} />
-        </div>
+      <div className="categoryView">
+        <CategoryAddForm onAdd={this.onAdd} />
+        <CategoryList categories={this.props.categories} />
+      </div>
     )
   }
 }

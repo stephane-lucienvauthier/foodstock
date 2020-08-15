@@ -19,7 +19,7 @@ class ProviderList extends React.Component<ProviderListProps, ProviderListState>
         return (
             <List component="nav">
                 {this.props.providers.map((provider) => {
-                    return <ListItem button>
+                    return <ListItem button key={provider.id}>
                         <ListItemText primary={provider.label} />
                     </ListItem>
                 })}

@@ -11,6 +11,7 @@ import Menu from '../menu/views'
 import Categories from '../categories/views'
 import Providers from '../providers/views'
 import Products from '../products/views'
+import { Product, ProductAdd } from '../products/models';
 
 export default class App extends React.Component<AppProps, AppState> {
 
@@ -35,6 +36,7 @@ export default class App extends React.Component<AppProps, AppState> {
     this.getProducts = this.getProducts.bind(this)
     this.onCategoryAdd = this.onCategoryAdd.bind(this)
     this.onProviderAdd = this.onProviderAdd.bind(this)
+    this.onProductAdd = this.onProductAdd.bind(this)
   }
 
   async componentDidMount(): Promise<void> {
@@ -82,6 +84,13 @@ export default class App extends React.Component<AppProps, AppState> {
     }
   }
 
+  async onProductAdd(product: ProductAdd): Promise<void> {
+    const response: Product[] = await this.productsApi.add(product)
+    if (response !== null) {
+      await this.getProducts()
+    }
+  }
+
   router(route: string): void {
     if (route === 'logout') {
       localStorage.clear()
@@ -114,7 +123,7 @@ export default class App extends React.Component<AppProps, AppState> {
                       </Grid>
                     </Grid>
                     <Grid item xs={10}>
-                      <Products products={this.state.products} />
+                      <Products products={this.state.products} categories={this.state.categories} onAdd={this.onProductAdd} />
                     </Grid>
                   </Grid>
                 </React.Fragment>

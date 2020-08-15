@@ -11,8 +11,18 @@ import Box from '@material-ui/core/Box'
 import IconButton from '@material-ui/core/IconButton'
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogTitle from '@material-ui/core/DialogTitle'
+import Button from '@material-ui/core/Button'
+import TextField from '@material-ui/core/TextField'
+import Select from '@material-ui/core/Select'
+import InputLabel from '@material-ui/core/InputLabel'
+import MenuItem from '@material-ui/core/MenuItem'
 import { ProductsMenu } from '../menu/views'
-import { ProductsProps, ProductsState, ProductListProps, ProductListState, ProductListRowProps, ProductListRowState } from './interfaces'
+import { ProductAdd } from './models'
+import { ProductsProps, ProductsState, ProductListProps, ProductListState, ProductListRowProps, ProductListRowState, ProductAddFormProps, ProductAddFormState } from './interfaces'
 import './style.css';
 
 class ProductListRow extends React.Component<ProductListRowProps, ProductListRowState> {
@@ -107,15 +117,122 @@ class ProductList extends React.Component<ProductListProps, ProductListState> {
   }
 }
 
+class ProductAddForm extends React.Component<ProductAddFormProps, ProductAddFormState> {
+  constructor(props: ProductAddFormProps, state: ProductAddFormState) {
+    super(props)
+    this.state = {
+      product: { label: "", unit: "Kg", category: 1 }
+    }
+    this.change = this.change.bind(this)
+    this.changeUnit = this.changeUnit.bind(this)
+    this.changeCategory = this.changeCategory.bind(this)
+    this.add = this.add.bind(this)
+    this.close = this.close.bind(this)
+  }
+
+  change(event: any): void {
+    console.log(event.target.name)
+    switch (event.target.name) {
+      case 'label':
+        this.setState({
+          product: {
+            label: event.target.value,
+            unit: this.state.product.unit,
+            category: this.state.product.category
+          }
+        })
+        break
+      default:
+    }
+  }
+
+  changeUnit(event: any) {
+    this.setState({
+      product: {
+        label: this.state.product.label,
+        unit: event.target.value,
+        category: this.state.product.category
+      }
+    })
+  }
+
+  changeCategory(event: any) {
+    this.setState({
+      product: {
+        label: this.state.product.label,
+        unit: this.state.product.unit,
+        category: event.target.value
+      }
+    })
+  }
+
+  add(): void {
+    this.props.onAdd(this.state.product)
+  }
+
+  close(): void {
+    this.props.onCancel()
+  }
+
+  render(): JSX.Element {
+    return (
+      <Dialog open={this.props.open} onClose={this.close}>
+        <DialogTitle>Add a product</DialogTitle>
+        <DialogContent>
+          <TextField className="textfield" label="label" name="label" onChange={this.change} fullWidth />
+          <InputLabel id="unit-label">Unit</InputLabel>
+          <Select labelId="unit-label" id="unit" value={this.state.product.unit} onChange={this.changeUnit} fullWidth>
+            <MenuItem value="Kg">Kg</MenuItem>
+            <MenuItem value="L">Litre</MenuItem>
+            <MenuItem value="Unité">Unité</MenuItem>
+          </Select>
+          <InputLabel id="category-label">Age</InputLabel>
+          <Select labelId="category-label" id="category" onChange={this.changeCategory} value={this.state.product.category} fullWidth>
+            {this.props.categories.map((category) => (
+              <MenuItem key={category.id} value={category.id}>{category.label}</MenuItem>
+            ))}
+          </Select>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.close} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={this.add} color="primary">
+            Add
+          </Button>
+        </DialogActions>
+      </Dialog>
+    )
+  }
+}
+
 export default class Products extends React.Component<ProductsProps, ProductsState> {
   constructor(props: ProductsProps, state: ProductsState) {
     super(props)
-    this.state = {}
+    this.state = {
+      open: false
+    }
     this.router = this.router.bind(this)
+    this.onAdd = this.onAdd.bind(this)
+    this.onCancel = this.onCancel.bind(this)
+  }
+
+  onAdd(product: ProductAdd): void {
+    this.props.onAdd(product)
+    this.setState({ open: false })
+  }
+
+  onCancel(): void {
+    this.setState({ open: false })
   }
 
   router(route: string): void {
-    console.log(route)
+    switch (route) {
+      case 'add':
+        this.setState({ open: true })
+        break;
+      default:
+    }
   }
 
   render(): JSX.Element {
@@ -123,6 +240,7 @@ export default class Products extends React.Component<ProductsProps, ProductsSta
       <>
         <ProductsMenu onRouter={this.router} />
         <ProductList products={this.props.products} />
+        <ProductAddForm open={this.state.open} onAdd={this.onAdd} onCancel={this.onCancel} categories={this.props.categories} />
       </>
     )
   }

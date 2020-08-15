@@ -1,7 +1,7 @@
 import { Login, Authentication } from '../login/models'
 import { Category, CategoryAdd } from '../categories/models'
 import { Provider, ProviderAdd } from '../providers/models'
-import { Product } from '../products/models'
+import { Product, ProductAdd } from '../products/models'
 
 class Api {
     uri: string = process.env.REACT_APP_API_URI!
@@ -73,5 +73,9 @@ export class ProvidersApi extends Api {
 export class ProductsApi extends Api {
     async list(): Promise<Product[]> {
         return await this.get('products')
+    }
+
+    async add(product: ProductAdd): Promise<Product[]> {
+        return await this.post('products', product)
     }
 }

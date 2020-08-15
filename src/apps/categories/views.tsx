@@ -3,8 +3,13 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import TextField from '@material-ui/core/TextField'
+import Dialog from '@material-ui/core/Dialog'
+import DialogActions from '@material-ui/core/DialogActions'
+import DialogContent from '@material-ui/core/DialogContent'
+import DialogTitle from '@material-ui/core/DialogTitle'
 import Button from '@material-ui/core/Button'
-import Grid from '@material-ui/core/Grid'
+import Paper from '@material-ui/core/Paper'
+import Divider from '@material-ui/core/Divider'
 import { CategoriesProps, CategoriesState, CategoryAddFormProps, CategoryAddFormState, CategoryListProps, CategoryListState } from './interfaces'
 import { CategoryAdd } from './models'
 import './style.css';
@@ -36,6 +41,7 @@ class CategoryAddForm extends React.Component<CategoryAddFormProps, CategoryAddF
     }
     this.change = this.change.bind(this)
     this.add = this.add.bind(this)
+    this.close = this.close.bind(this)
   }
 
   change(event: any): void {
@@ -46,18 +52,26 @@ class CategoryAddForm extends React.Component<CategoryAddFormProps, CategoryAddF
     this.props.onAdd(this.state.category)
   }
 
+  close(): void {
+    this.props.onCancel()
+  }
+
   render(): JSX.Element {
     return (
-      <form>
-        <Grid container spacing={1}>
-          <Grid item xs={11}>
-            <TextField className="textfield" label="label" name="label" onChange={this.change} />
-          </Grid>
-          <Grid item xs={1}>
-            <Button type="button" variant="contained" color="primary" onClick={this.add}>Add</Button>
-          </Grid>
-        </Grid>
-      </form>
+      <Dialog open={this.props.open} onClose={this.close}>
+        <DialogTitle>Add a category</DialogTitle>
+        <DialogContent>
+          <TextField className="textfield" label="label" name="label" onChange={this.change} fullWidth />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.close} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={this.add} color="primary">
+            Add
+          </Button>
+        </DialogActions>
+      </Dialog>
     )
   }
 }
@@ -65,20 +79,37 @@ class CategoryAddForm extends React.Component<CategoryAddFormProps, CategoryAddF
 export default class Categories extends React.Component<CategoriesProps, CategoriesState> {
   constructor(props: CategoriesProps, state: CategoriesState) {
     super(props)
-    this.state = {}
+    this.state = {
+      open: false
+    }
     this.onAdd = this.onAdd.bind(this)
+    this.onCancel = this.onCancel.bind(this)
+    this.showAddForm = this.showAddForm.bind(this)
   }
 
   onAdd(category: CategoryAdd): void {
     this.props.onAdd(category)
+    this.setState({ open: false })
+  }
+
+  onCancel(): void {
+    this.setState({ open: false })
+  }
+
+  showAddForm(): void {
+    this.setState({ open: true })
   }
 
   render(): JSX.Element {
     return (
-      <div className="categoryView">
-        <CategoryAddForm onAdd={this.onAdd} />
-        <CategoryList categories={this.props.categories} />
-      </div>
+      <>
+        <Paper className="CategoriesPaper" elevation={3}>
+          <Button type="button" color="primary" onClick={this.showAddForm} fullWidth>Add</Button>
+          <Divider />
+          <CategoryList categories={this.props.categories} />
+        </Paper>
+        <CategoryAddForm open={this.state.open} onAdd={this.onAdd} onCancel={this.onCancel} />
+      </>
     )
   }
 }

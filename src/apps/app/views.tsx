@@ -1,4 +1,5 @@
 import React from 'react';
+import Grid from '@material-ui/core/Grid';
 import { AppProps, AppState } from './interfaces'
 import './style.css';
 import { LoginApi, CategoriesApi, ProvidersApi, ProductsApi } from './api'
@@ -98,18 +99,24 @@ export default class App extends React.Component<AppProps, AppState> {
             switch (this.state.currentView) {
               case 'products':
                 return <React.Fragment>
-                  <Products products={this.state.products} />
-                  <Menu onRouter={this.router} />
-                </React.Fragment>
-              case 'categories':
-                return <React.Fragment>
-                  <Categories categories={this.state.categories} onAdd={this.onCategoryAdd} />
-                  <Menu onRouter={this.router} />
-                </React.Fragment>
-              case 'providers':
-                return <React.Fragment>
-                  <Providers providers={this.state.providers} onAdd={this.onProviderAdd} />
-                  <Menu onRouter={this.router} />
+                  <Grid container spacing={3}>
+                    <Grid item xs={12}>
+                      <Menu onRouter={this.router} />
+                    </Grid>
+                    <Grid item xs={2}>
+                      <Grid container spacing={3}>
+                        <Grid item xs={12}>
+                          <Categories categories={this.state.categories} onAdd={this.onCategoryAdd} />
+                        </Grid>
+                        <Grid item xs={12}>
+                          <Providers providers={this.state.providers} onAdd={this.onProviderAdd} />
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                    <Grid item xs={10}>
+                      <Products products={this.state.products} />
+                    </Grid>
+                  </Grid>
                 </React.Fragment>
               default:
                 return null;

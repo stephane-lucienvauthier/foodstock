@@ -18,10 +18,8 @@ export default class Menu extends React.Component<MenuProps, MenuState> {
 
     render(): JSX.Element {
         return (
-            <BottomNavigation className="bottomNavigation" onChange={this.navigationChange} showLabels>
+            <BottomNavigation onChange={this.navigationChange} showLabels>
                 <BottomNavigationAction label="Products" value="products" icon={<Icon>fastfood</Icon>} />
-                <BottomNavigationAction label="Categories" value="categories" icon={<Icon>category</Icon>} />
-                <BottomNavigationAction label="Providers" value="providers" icon={<Icon>business</Icon>} />
                 <BottomNavigationAction label="Log out" value="logout" icon={<Icon>exit_to_app</Icon>} />
             </BottomNavigation>
         )

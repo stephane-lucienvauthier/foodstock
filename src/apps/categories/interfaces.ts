@@ -7,7 +7,9 @@ export interface CategoryListProps {
 export interface CategoryListState { }
 
 export interface CategoryAddFormProps {
+    open: boolean
     onAdd(category: CategoryAdd): void
+    onCancel(): void
 }
 
 export interface CategoryAddFormState {
@@ -19,4 +21,6 @@ export interface CategoriesProps {
     onAdd(category: CategoryAdd): void
 }
 
-export interface CategoriesState { }
+export interface CategoriesState {
+    open: boolean
+ }

@@ -89,6 +89,7 @@ class ProductList extends React.Component<ProductListProps, ProductListState> {
         <Table className="productsTable">
           <TableHead>
             <TableRow>
+              <TableCell></TableCell>
               <TableCell>Label</TableCell>
               <TableCell align="right">Unit</TableCell>
               <TableCell align="right">Category</TableCell>

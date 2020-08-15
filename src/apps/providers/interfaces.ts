@@ -7,7 +7,9 @@ export interface ProviderListProps {
 export interface ProviderListState { }
 
 export interface ProviderAddFormProps {
+    open: boolean
     onAdd(provider: ProviderAdd): void
+    onCancel(): void
 }
 
 export interface ProviderAddFormState {
@@ -19,4 +21,6 @@ export interface ProvidersProps {
     onAdd(provider: ProviderAdd): void
 }
 
-export interface ProvidersState { }
+export interface ProvidersState {
+    open: boolean
+ }

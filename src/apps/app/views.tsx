@@ -11,7 +11,7 @@ import Menu from '../menu/views'
 import Categories from '../categories/views'
 import Providers from '../providers/views'
 import Products from '../products/views'
-import { Product, ProductAdd } from '../products/models';
+import { Product, ProductAdd, Batch, BatchAdd } from '../products/models';
 
 export default class App extends React.Component<AppProps, AppState> {
 
@@ -37,6 +37,7 @@ export default class App extends React.Component<AppProps, AppState> {
     this.onCategoryAdd = this.onCategoryAdd.bind(this)
     this.onProviderAdd = this.onProviderAdd.bind(this)
     this.onProductAdd = this.onProductAdd.bind(this)
+    this.onBatchAdd = this.onBatchAdd.bind(this)
   }
 
   async componentDidMount(): Promise<void> {
@@ -85,7 +86,14 @@ export default class App extends React.Component<AppProps, AppState> {
   }
 
   async onProductAdd(product: ProductAdd): Promise<void> {
-    const response: Product[] = await this.productsApi.add(product)
+    const response: Product = await this.productsApi.add(product)
+    if (response !== null) {
+      await this.getProducts()
+    }
+  }
+
+  async onBatchAdd(productId: number, batch: BatchAdd): Promise<void> {
+    const response: Batch = await this.productsApi.addBatch(productId, batch)
     if (response !== null) {
       await this.getProducts()
     }
@@ -123,7 +131,7 @@ export default class App extends React.Component<AppProps, AppState> {
                       </Grid>
                     </Grid>
                     <Grid item xs={10}>
-                      <Products products={this.state.products} categories={this.state.categories} onAdd={this.onProductAdd} />
+                      <Products products={this.state.products} categories={this.state.categories} providers={this.state.providers} onAdd={this.onProductAdd} onBatchAdd={this.onBatchAdd} />
                     </Grid>
                   </Grid>
                 </React.Fragment>

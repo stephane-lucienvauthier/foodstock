@@ -3,9 +3,18 @@ export interface Batch {
     initial: number,
     current: number,
     price: number,
+    purchase: string,
+    limit: string,
+    provider: string
+}
+
+export interface BatchAdd {
+    initial: number,
+    current: number,
+    price: number,
     purchase: Date,
     limit: Date,
-    provider: string
+    provider: number
 }
 
 export interface Product {

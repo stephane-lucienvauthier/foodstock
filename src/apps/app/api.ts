@@ -1,7 +1,7 @@
 import { Login, Authentication } from '../login/models'
 import { Category, CategoryAdd } from '../categories/models'
 import { Provider, ProviderAdd } from '../providers/models'
-import { Product, ProductAdd } from '../products/models'
+import { Product, ProductAdd, Batch, BatchAdd } from '../products/models'
 
 class Api {
     uri: string = process.env.REACT_APP_API_URI!
@@ -75,7 +75,18 @@ export class ProductsApi extends Api {
         return await this.get('products')
     }
 
-    async add(product: ProductAdd): Promise<Product[]> {
+    async add(product: ProductAdd): Promise<Product> {
         return await this.post('products', product)
+    }
+
+    async addBatch(productId: number, batch: BatchAdd): Promise<Batch> {
+        return await this.post(`products/${productId}/batches`, {
+            initial: batch.initial,
+            current: batch.current,
+            price: batch.price,
+            purchase: batch.purchase.toISOString().split('T')[0],
+            limit: batch.limit.toISOString().split('T')[0],
+            provider: batch.provider
+        })
     }
 }

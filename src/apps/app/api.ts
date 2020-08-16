@@ -43,6 +43,30 @@ class Api {
             return null
         }
     }
+
+    async put(resource: string, body:any, authentication: boolean = true): Promise<any> {
+        let headers;
+        if (authentication) {
+            const user = JSON.parse(localStorage.getItem('user')!)
+            headers = new Headers({
+                'Authorization': `Token ${user.token}`,
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            });
+        } else {
+            headers = new Headers({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            });
+        }
+
+        const response = await fetch(`${this.uri}/${resource}`, { method: 'PUT', headers: headers, body: JSON.stringify(body) })
+        if (response.status === 200) {
+            return await response.json()    
+        } else {
+            return null
+        }
+    }
 }
 
 export class LoginApi extends Api {
@@ -55,8 +79,12 @@ export class CategoriesApi extends Api {
         return await this.get('categories')
     }
 
-    async add(category: CategoryAdd): Promise<Category[]> {
+    async add(category: CategoryAdd): Promise<Category> {
         return await this.post('categories', category)
+    }
+
+    async update(categoryId: number, category: CategoryAdd): Promise<Category> {
+        return await this.put(`categories/${categoryId}`, category)
     }
 }
 

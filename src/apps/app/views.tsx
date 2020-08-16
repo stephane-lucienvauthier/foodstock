@@ -35,6 +35,7 @@ export default class App extends React.Component<AppProps, AppState> {
     this.getProviders = this.getProviders.bind(this)
     this.getProducts = this.getProducts.bind(this)
     this.onCategoryAdd = this.onCategoryAdd.bind(this)
+    this.onCategoryUpdate = this.onCategoryUpdate.bind(this)
     this.onProviderAdd = this.onProviderAdd.bind(this)
     this.onProductAdd = this.onProductAdd.bind(this)
     this.onBatchAdd = this.onBatchAdd.bind(this)
@@ -72,7 +73,14 @@ export default class App extends React.Component<AppProps, AppState> {
   }
 
   async onCategoryAdd(category: CategoryAdd): Promise<void> {
-    const response: Category[] = await this.categoriesApi.add(category)
+    const response: Category = await this.categoriesApi.add(category)
+    if (response !== null) {
+      await this.getCategories()
+    }
+  }
+
+  async onCategoryUpdate(categoryId: number, category: CategoryAdd): Promise<void> {
+    const response: Category = await this.categoriesApi.update(categoryId, category)
     if (response !== null) {
       await this.getCategories()
     }
@@ -123,7 +131,7 @@ export default class App extends React.Component<AppProps, AppState> {
                     <Grid item xs={2}>
                       <Grid container spacing={3}>
                         <Grid item xs={12}>
-                          <Categories categories={this.state.categories} onAdd={this.onCategoryAdd} />
+                          <Categories categories={this.state.categories} onAdd={this.onCategoryAdd} onUpdate={this.onCategoryUpdate} />
                         </Grid>
                         <Grid item xs={12}>
                           <Providers providers={this.state.providers} onAdd={this.onProviderAdd} />

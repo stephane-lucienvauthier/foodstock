@@ -36,6 +36,7 @@ export default class App extends React.Component<AppProps, AppState> {
     this.getProducts = this.getProducts.bind(this)
     this.onCategoryAdd = this.onCategoryAdd.bind(this)
     this.onCategoryUpdate = this.onCategoryUpdate.bind(this)
+    this.onCategoryDelete = this.onCategoryDelete.bind(this)
     this.onProviderAdd = this.onProviderAdd.bind(this)
     this.onProductAdd = this.onProductAdd.bind(this)
     this.onBatchAdd = this.onBatchAdd.bind(this)
@@ -86,6 +87,11 @@ export default class App extends React.Component<AppProps, AppState> {
     }
   }
 
+  async onCategoryDelete(categoryId: number): Promise<void> {
+    await this.categoriesApi.remove(categoryId)
+    await this.getCategories()
+  }
+
   async onProviderAdd(provider: ProviderAdd): Promise<void> {
     const response: Provider[] = await this.providersApi.add(provider)
     if (response !== null) {
@@ -131,7 +137,7 @@ export default class App extends React.Component<AppProps, AppState> {
                     <Grid item xs={2}>
                       <Grid container spacing={3}>
                         <Grid item xs={12}>
-                          <Categories categories={this.state.categories} onAdd={this.onCategoryAdd} onUpdate={this.onCategoryUpdate} />
+                          <Categories categories={this.state.categories} onAdd={this.onCategoryAdd} onUpdate={this.onCategoryUpdate} onDelete={this.onCategoryDelete} />
                         </Grid>
                         <Grid item xs={12}>
                           <Providers providers={this.state.providers} onAdd={this.onProviderAdd} />

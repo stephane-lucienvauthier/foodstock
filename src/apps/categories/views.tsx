@@ -13,9 +13,55 @@ import Divider from '@material-ui/core/Divider'
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import Icon from '@material-ui/core/Icon'
 import IconButton from '@material-ui/core/IconButton'
-import { CategoriesProps, CategoriesState, CategoryAddFormProps, CategoryAddFormState, CategoryListProps, CategoryListState, CategoryUpdateFormProps, CategoryUpdateFormState } from './interfaces'
+import { 
+  CategoriesProps,
+  CategoriesState,
+  CategoryAddFormProps,
+  CategoryAddFormState,
+  CategoryListProps,
+  CategoryListState,
+  CategoryUpdateFormProps,
+  CategoryUpdateFormState,
+  CategoryDeleteFormProps,
+  CategoryDeleteFormState
+} from './interfaces'
 import { Category, CategoryAdd } from './models'
 import './style.css';
+
+class CategoryDeleteForm extends React.Component<CategoryDeleteFormProps, CategoryDeleteFormState> {
+  constructor(props: CategoryDeleteFormProps, state: CategoryDeleteFormState) {
+    super(props)
+    this.state = {}
+    this.delete = this.delete.bind(this)
+    this.close = this.close.bind(this)
+  }
+
+  delete(): void {
+    this.props.onDelete()
+  }
+
+  close(): void {
+    this.props.onCancel()
+  }
+
+  render(): JSX.Element {
+    return (
+      <Dialog open={this.props.open} onClose={this.close}>
+        <DialogTitle>Delete a category</DialogTitle>
+        <DialogContent>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={this.close} color="secondary">
+            Cancel
+          </Button>
+          <Button onClick={this.delete} color="primary">
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
+    )
+  }
+}
 
 class CategoryUpdateForm extends React.Component<CategoryUpdateFormProps, CategoryUpdateFormState> {
   constructor(props: CategoryUpdateFormProps, state: CategoryUpdateFormState) {
@@ -52,7 +98,7 @@ class CategoryUpdateForm extends React.Component<CategoryUpdateFormProps, Catego
             Cancel
           </Button>
           <Button onClick={this.update} color="primary">
-            Add
+            Update
           </Button>
         </DialogActions>
       </Dialog>
@@ -65,10 +111,15 @@ class CategoryList extends React.Component<CategoryListProps, CategoryListState>
     super(props)
     this.state = {}
     this.edit = this.edit.bind(this)
+    this.delete = this.delete.bind(this)
   }
 
   edit(category: Category): void {
     this.props.showUpdateForm(category)
+  }
+
+  delete(category: Category): void {
+    this.props.showDeleteForm(category)
   }
 
   render(): JSX.Element {
@@ -77,7 +128,10 @@ class CategoryList extends React.Component<CategoryListProps, CategoryListState>
         {this.props.categories.map((category) => {
           return <ListItem button key={category.id}>
             <ListItemText primary={category.label} />
-            <ListItemSecondaryAction><IconButton size="small" onClick={() => this.edit(category)} color="primary"><Icon>edit</Icon></IconButton></ListItemSecondaryAction>
+            <ListItemSecondaryAction>
+              <IconButton size="small" onClick={() => this.edit(category)} color="primary"><Icon>edit</Icon></IconButton>
+              <IconButton size="small" onClick={() => this.delete(category)} color="secondary"><Icon>delete</Icon></IconButton>
+            </ListItemSecondaryAction>
           </ListItem>
         })}
       </List>
@@ -133,14 +187,19 @@ export default class Categories extends React.Component<CategoriesProps, Categor
     super(props)
     this.state = {
       open: false,
-      openUpdateForm: false
+      openUpdateForm: false,
+      openDeleteForm: false,
+      current: undefined
     }
     this.onAdd = this.onAdd.bind(this)
     this.onUpdate = this.onUpdate.bind(this)
     this.onCancel = this.onCancel.bind(this)
+    this.onDelete = this.onDelete.bind(this)
     this.onCancelUpdate = this.onCancelUpdate.bind(this)
+    this.onCancelDelete = this.onCancelDelete.bind(this)
     this.showAddForm = this.showAddForm.bind(this)
     this.showUpdateForm = this.showUpdateForm.bind(this)
+    this.showDeleteForm = this.showDeleteForm.bind(this)
   }
 
   onAdd(category: CategoryAdd): void {
@@ -155,12 +214,23 @@ export default class Categories extends React.Component<CategoriesProps, Categor
     this.setState({ openUpdateForm: false })
   }
 
+  onDelete(): void {
+    if (this.state.current !== undefined) {
+      this.props.onDelete(this.state.current.id)
+    }
+    this.setState({ openDeleteForm: false })
+  }
+
   onCancel(): void {
     this.setState({ open: false })
   }
 
   onCancelUpdate(): void {
     this.setState({ openUpdateForm: false })
+  }
+
+  onCancelDelete(): void {
+    this.setState({ openDeleteForm: false })
   }
 
   showAddForm(): void {
@@ -172,19 +242,25 @@ export default class Categories extends React.Component<CategoriesProps, Categor
     this.setState({ openUpdateForm: true })
   }
 
+  showDeleteForm(category: Category): void {
+    this.setState({ current: category })
+    this.setState({ openDeleteForm: true })
+  }
+
   render(): JSX.Element {
     return (
       <>
         <Paper className="CategoriesPaper" elevation={3}>
           <Button type="button" color="primary" onClick={this.showAddForm} fullWidth>Add</Button>
           <Divider />
-          <CategoryList categories={this.props.categories} showUpdateForm={this.showUpdateForm} />
+          <CategoryList categories={this.props.categories} showUpdateForm={this.showUpdateForm} showDeleteForm={this.showDeleteForm} />
         </Paper>
         <CategoryAddForm open={this.state.open} onAdd={this.onAdd} onCancel={this.onCancel} />
         {
           this.state.current && (
             <>
               <CategoryUpdateForm category={this.state.current} open={this.state.openUpdateForm} onUpdate={this.onUpdate} onCancel={this.onCancelUpdate} />
+              <CategoryDeleteForm open={this.state.openDeleteForm} onDelete={this.onDelete} onCancel={this.onCancelDelete} />
             </>
           )
         }

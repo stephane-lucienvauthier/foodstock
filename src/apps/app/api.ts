@@ -67,6 +67,28 @@ class Api {
             return null
         }
     }
+
+    async delete(resource: string, authentication: boolean = true): Promise<any> {
+        let headers;
+        if (authentication) {
+            const user = JSON.parse(localStorage.getItem('user')!)
+            headers = new Headers({
+                'Authorization': `Token ${user.token}`,
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            });
+        } else {
+            headers = new Headers({
+                "Content-Type": "application/json",
+                "Accept": "application/json"
+            });
+        }
+
+        const response = await fetch(`${this.uri}/${resource}`, { method: 'DELETE', headers: headers })
+        if (response.status !== 204) {
+            return null    
+        }
+    }
 }
 
 export class LoginApi extends Api {
@@ -85,6 +107,10 @@ export class CategoriesApi extends Api {
 
     async update(categoryId: number, category: CategoryAdd): Promise<Category> {
         return await this.put(`categories/${categoryId}`, category)
+    }
+
+    async remove(categoryId: number): Promise<void> {
+        return await this.delete(`categories/${categoryId}`)
     }
 }
 

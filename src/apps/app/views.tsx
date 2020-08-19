@@ -1,125 +1,165 @@
-import React from 'react';
-import Grid from '@material-ui/core/Grid';
-import { AppProps, AppState } from './interfaces'
-import './style.css';
-import { LoginApi, CategoriesApi, ProvidersApi, ProductsApi } from './api'
-import { Category, CategoryAdd } from '../categories/models'
-import { Provider, ProviderAdd } from '../providers/models'
-import { Login, Authentication } from '../login/models'
-import LoginView from '../login/views'
-import Menu from '../menu/views'
+import React from 'react'
+import BottomNavigation from '@material-ui/core/BottomNavigation'
+import BottomNavigationAction from '@material-ui/core/BottomNavigationAction'
+import Grid from '@material-ui/core/Grid'
+import Icon from '@material-ui/core/Icon'
+import { Login } from '../accounts/models'
+import { CategorySave } from '../categories/models'
+import { ProviderSave } from '../providers/models'
+import { Product, ProductSave, BatchSave } from '../products/models'
+import { MainProps, MainState, MenuProps } from './interfaces'
+import LoginView from '../accounts/views'
 import Categories from '../categories/views'
 import Providers from '../providers/views'
 import Products from '../products/views'
-import { Product, ProductAdd, Batch, BatchAdd } from '../products/models';
 
-export default class App extends React.Component<AppProps, AppState> {
+class Menu extends React.Component<MenuProps> {
+  constructor(props: MenuProps) {
+    super(props)
+    this.onRoute = this.onRoute.bind(this)
+  }
 
-  loginApi: LoginApi = new LoginApi()
-  categoriesApi: CategoriesApi = new CategoriesApi()
-  providersApi: ProvidersApi = new ProvidersApi()
-  productsApi: ProductsApi = new ProductsApi()
+  onRoute(event: React.ChangeEvent<{}>, route: string): void {
+    this.props.onRoute(route)
+  }
 
-  constructor(props: AppProps, state: AppState) {
+  render(): JSX.Element {
+    return (
+      <BottomNavigation onChange={this.onRoute} showLabels>
+        <BottomNavigationAction label="Products" value="products" icon={<Icon>fastfood</Icon>} />
+        <BottomNavigationAction label="Log out" value="logout" icon={<Icon>exit_to_app</Icon>} />
+      </BottomNavigation>
+    )
+  }
+}
+
+export default class App extends React.Component<MainProps, MainState> {
+  constructor(props: MainProps, state: MainState) {
     super(props)
     this.state = {
       connected: localStorage.getItem('user') !== null,
+      currentView: 'products',
       categories: [],
       providers: [],
-      products: [],
-      currentView: 'products'
+      products: []
     }
-    this.router = this.router.bind(this)
-    this.login = this.login.bind(this)
-    this.getCategories = this.getCategories.bind(this)
-    this.getProviders = this.getProviders.bind(this)
-    this.getProducts = this.getProducts.bind(this)
-    this.onCategoryAdd = this.onCategoryAdd.bind(this)
-    this.onCategoryUpdate = this.onCategoryUpdate.bind(this)
-    this.onCategoryDelete = this.onCategoryDelete.bind(this)
-    this.onProviderAdd = this.onProviderAdd.bind(this)
-    this.onProductAdd = this.onProductAdd.bind(this)
-    this.onBatchAdd = this.onBatchAdd.bind(this)
+    this.onRoute = this.onRoute.bind(this)
+    this.onLogin = this.onLogin.bind(this)
+    this.onCategoryList = this.onCategoryList.bind(this)
+    this.onCategorySave = this.onCategorySave.bind(this)
+    this.onCategoryRemove = this.onCategoryRemove.bind(this)
+    this.onProviderList = this.onProviderList.bind(this)
+    this.onProviderSave = this.onProviderSave.bind(this)
+    this.onProviderRemove = this.onProviderRemove.bind(this)
+    this.onProductList = this.onProductList.bind(this)
+    this.onProductSave = this.onProductSave.bind(this)
+    this.onProductRemove = this.onProductRemove.bind(this)
+    this.onBatchSave = this.onBatchSave.bind(this)
+    this.onBatchRemove = this.onBatchRemove.bind(this)
   }
 
   async componentDidMount(): Promise<void> {
     if (this.state.connected) {
-      await this.getCategories()
-      await this.getProviders()
-      await this.getProducts()
+      await this.onCategoryList()
+      await this.onProviderList()
+      await this.onProductList()
     }
   }
 
-  async login(login: Login): Promise<void> {
-    const response: Authentication = await this.loginApi.authenticate(login)
-    if (response !== null) {
-      localStorage.setItem('user', JSON.stringify(response))
-      this.setState({ connected: true })
-      await this.getCategories()
-      await this.getProviders()
-      await this.getProducts()
-    }
+  onRoute(route: string): void {
   }
 
-  async getCategories(): Promise<void> {
-    this.setState({ categories: await this.categoriesApi.list() })
+  async onLogin(login: Login): Promise<void> {
   }
 
-  async getProviders(): Promise<void> {
-    this.setState({ providers: await this.providersApi.list() })
+  async onCategoryList(): Promise<void> {
+    this.setState({ categories: await this.props.categoriesApi.list() })
   }
 
-  async getProducts(): Promise<void> {
-    this.setState({ products: await this.productsApi.list() })
-  }
-
-  async onCategoryAdd(category: CategoryAdd): Promise<void> {
-    const response: Category = await this.categoriesApi.add(category)
-    if (response !== null) {
-      await this.getCategories()
-    }
-  }
-
-  async onCategoryUpdate(categoryId: number, category: CategoryAdd): Promise<void> {
-    const response: Category = await this.categoriesApi.update(categoryId, category)
-    if (response !== null) {
-      await this.getCategories()
-    }
-  }
-
-  async onCategoryDelete(categoryId: number): Promise<void> {
-    await this.categoriesApi.remove(categoryId)
-    await this.getCategories()
-  }
-
-  async onProviderAdd(provider: ProviderAdd): Promise<void> {
-    const response: Provider[] = await this.providersApi.add(provider)
-    if (response !== null) {
-      await this.getProviders()
-    }
-  }
-
-  async onProductAdd(product: ProductAdd): Promise<void> {
-    const response: Product = await this.productsApi.add(product)
-    if (response !== null) {
-      await this.getProducts()
-    }
-  }
-
-  async onBatchAdd(productId: number, batch: BatchAdd): Promise<void> {
-    const response: Batch = await this.productsApi.addBatch(productId, batch)
-    if (response !== null) {
-      await this.getProducts()
-    }
-  }
-
-  router(route: string): void {
-    if (route === 'logout') {
-      localStorage.clear()
-      window.location.reload(false);
+  async onCategorySave(id: number, category: CategorySave): Promise<void> {
+    if (id === 0) {
+      const result = await this.props.categoriesApi.add(category)
+      if (result !== null) {
+        let c = this.state.categories
+        c.push(result)
+        this.setState({ categories: c })
+      }
     } else {
-      this.setState({ currentView: route })
+      const result = await this.props.categoriesApi.update(id, category)
+      if (result !== null) {
+        let c = this.state.categories
+        let index = c.findIndex(x => x.id === id)
+        c[index] = result
+        this.setState({ categories: c })
+      }
     }
+  }
+
+  async onCategoryRemove(id: number): Promise<void> {
+    await this.props.categoriesApi.remove(id)
+    let c = this.state.categories
+    let index = c.findIndex(x => x.id === id)
+    c.splice(index, 1);
+    this.setState({ categories: c })
+  }
+
+  async onProviderList(): Promise<void> {
+    this.setState({ providers: await this.props.providersApi.list() })
+  }
+
+  async onProviderSave(id: number, provider: ProviderSave): Promise<void> {
+    if (id === 0) {
+      const result = await this.props.providersApi.add(provider)
+      if (result !== null) {
+        let c = this.state.providers
+        c.push(result)
+        this.setState({ providers: c })
+      }
+    } else {
+      const result = await this.props.providersApi.update(id, provider)
+      if (result !== null) {
+        let c = this.state.providers
+        let index = c.findIndex(x => x.id === id)
+        c[index] = result
+        this.setState({ providers: c })
+      }
+    }
+  }
+
+  async onProviderRemove(id: number): Promise<void> {
+  }
+
+  async onProductList(): Promise<void> {
+    this.setState({ products: await this.props.productsApi.list() })
+  }
+
+  async onProductSave(id: number, product: ProductSave): Promise<void> {
+    if (id === 0) {
+      const result = await this.props.productsApi.add(product)
+      if (result !== null) {
+        let c = this.state.products
+        c.push(result)
+        this.setState({ products: c })
+      }
+    }
+  }
+
+  async onProductRemove(id: number): Promise<void> {
+  }
+
+  async onBatchSave(productId: number, id: number, batch: BatchSave): Promise<void> {
+    if (id === 0) {
+      const result = await this.props.productsApi.addBatch(productId, batch)
+      if (result !== null) {
+        let index = this.state.products.findIndex(x => x.id === productId)
+        if(index  > 0) {
+          this.state.products[index].batches.push(result)
+        }
+      }
+    }
+  }
+
+  async onBatchRemove(productId: number, id: number): Promise<void> {
   }
 
   render(): JSX.Element {
@@ -129,31 +169,31 @@ export default class App extends React.Component<AppProps, AppState> {
           if (this.state.connected) {
             switch (this.state.currentView) {
               case 'products':
-                return <React.Fragment>
+                return <>
                   <Grid container spacing={3}>
                     <Grid item xs={12}>
-                      <Menu onRouter={this.router} />
+                      <Menu onRoute={this.onRoute} />
                     </Grid>
                     <Grid item xs={2}>
                       <Grid container spacing={3}>
                         <Grid item xs={12}>
-                          <Categories categories={this.state.categories} onAdd={this.onCategoryAdd} onUpdate={this.onCategoryUpdate} onDelete={this.onCategoryDelete} />
+                          <Categories list={this.state.categories} onSave={this.onCategorySave} onRemove={this.onCategoryRemove} />
                         </Grid>
                         <Grid item xs={12}>
-                          <Providers providers={this.state.providers} onAdd={this.onProviderAdd} />
+                          <Providers list={this.state.providers} onSave={this.onProviderSave} onRemove={this.onProviderRemove} />
                         </Grid>
                       </Grid>
                     </Grid>
                     <Grid item xs={10}>
-                      <Products products={this.state.products} categories={this.state.categories} providers={this.state.providers} onAdd={this.onProductAdd} onBatchAdd={this.onBatchAdd} />
+                      <Products list={this.state.products} categories={this.state.categories} providers={this.state.providers} onSave={this.onProductSave} onRemove={this.onProductRemove} onBatchSave={this.onBatchSave} onBatchRemove={this.onBatchRemove} />
                     </Grid>
                   </Grid>
-                </React.Fragment>
+                </>
               default:
                 return null;
             }
           } else {
-            return <LoginView onlogin={this.login} />
+            return <LoginView onLogin={this.onLogin} />
           }
         })()}
       </div>

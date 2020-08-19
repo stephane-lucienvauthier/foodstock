@@ -3,10 +3,11 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './apps/app/views';
 import * as serviceWorker from './serviceWorker';
+import { CategoriesApi, ProvidersApi, ProductsApi, AccountsApi } from './apps/core/apis'
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <App categoriesApi={new CategoriesApi()} providersApi={new ProvidersApi()} productsApi={new ProductsApi()} accountsApi={new AccountsApi()} />
   </React.StrictMode>,
   document.getElementById('root')
 );

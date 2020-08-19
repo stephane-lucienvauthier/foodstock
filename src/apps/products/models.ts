@@ -8,7 +8,7 @@ export interface Batch {
     provider: string
 }
 
-export interface BatchAdd {
+export interface BatchSave {
     initial: number,
     current: number,
     price: number,
@@ -26,7 +26,7 @@ export interface Product {
     batches: Batch[]
 }
 
-export interface ProductAdd {
+export interface ProductSave {
     label: string,
     unit: string,
     category: number

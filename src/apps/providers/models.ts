@@ -4,7 +4,7 @@ export interface Provider {
     city: string
 }
 
-export interface ProviderAdd {
+export interface ProviderSave {
     label: string,
     address: string,
     city: string,

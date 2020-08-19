@@ -3,6 +3,6 @@ export interface Category {
     label: string
 }
 
-export interface CategoryAdd {
+export interface CategorySave {
     label: string
 }

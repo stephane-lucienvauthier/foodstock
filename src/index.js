@@ -1,13 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './apps/app/views';
+import App from './App';
 import * as serviceWorker from './serviceWorker';
-import { CategoriesApi, ProvidersApi, ProductsApi, AccountsApi } from './apps/core/apis'
 
 ReactDOM.render(
   <React.StrictMode>
-    <App categoriesApi={new CategoriesApi()} providersApi={new ProvidersApi()} productsApi={new ProductsApi()} accountsApi={new AccountsApi()} />
+    <App />
   </React.StrictMode>,
   document.getElementById('root')
 );

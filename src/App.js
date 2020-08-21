@@ -7,7 +7,8 @@ import { Paper } from '@material-ui/core'
 import Snackbar from '@material-ui/core/Snackbar'
 import Login from './components/Login'
 import CategoryList from './components/CategoryList'
-import { LoginApi, CategoryListApi } from './services/Api'
+import ProviderList from './components/ProviderList'
+import { LoginApi, CategoryListApi, ProviderListApi } from './services/Api'
 
 const useStyles = makeStyles((theme) => ({
   app: {
@@ -25,6 +26,7 @@ export default function App() {
   const [connected, setConnected] = useState(localStorage.getItem('user') !== null)
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [categories, setCategories] = useState([])
+  const [providers, setProviders] = useState([])
   const [snackbarSeverity, setSnackbarSeverity] = useState('success')
 
   function onCloseSnackbar() {
@@ -55,6 +57,19 @@ export default function App() {
       }
     }
     listCategories()
+
+    async function listProviders() {
+      const response = await ProviderListApi()
+      if (response) {
+        setProviders(response)
+      } else {
+        setSnackbarSeverity('error')
+        setSnackbarMessage('An error was occured. Retry later.')
+        setProviders([])
+      }
+    }
+    listProviders()
+    
   }, []);
 
   return (
@@ -69,6 +84,7 @@ export default function App() {
               <Paper elevation={3}>
                 <CategoryList categories={categories} />
                 <Divider />
+                <ProviderList providers={providers} />
               </Paper>
             </Grid>
           </Grid>

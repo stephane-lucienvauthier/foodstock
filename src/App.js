@@ -1,9 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
+import Divider from '@material-ui/core/Divider'
+import Grid from '@material-ui/core/Grid'
 import MuiAlert from '@material-ui/lab/Alert';
+import { Paper } from '@material-ui/core'
 import Snackbar from '@material-ui/core/Snackbar'
 import Login from './components/Login'
-import { LoginApi } from './services/Api'
+import CategoryList from './components/CategoryList'
+import { LoginApi, CategoryListApi } from './services/Api'
 
 const useStyles = makeStyles((theme) => ({
   app: {
@@ -20,7 +24,13 @@ export default function App() {
   const classes = useStyles()
   const [connected, setConnected] = useState(localStorage.getItem('user') !== null)
   const [snackbarMessage, setSnackbarMessage] = useState('')
+  const [categories, setCategories] = useState([])
   const [snackbarSeverity, setSnackbarSeverity] = useState('success')
+
+  function onCloseSnackbar() {
+    setSnackbarMessage('')
+    setSnackbarSeverity('success')
+  }
 
   async function onLogin(username, password) {
     const response = await LoginApi(username, password)
@@ -33,15 +43,36 @@ export default function App() {
     }
   }
 
-  function onCloseSnackbar() {
-    setSnackbarMessage('')
-    setSnackbarSeverity('success')
-  }
+  useEffect(() => {
+    async function listCategories() {
+      const response = await CategoryListApi()
+      if (response) {
+        setCategories(response)
+      } else {
+        setSnackbarSeverity('error')
+        setSnackbarMessage('An error was occured. Retry later.')
+        setCategories([])
+      }
+    }
+    listCategories()
+  }, []);
 
   return (
     <div className={classes.app}>
       {
         !connected && <Login login={onLogin} />
+      }
+      {
+        connected && <>
+          <Grid container spacing={3}>
+            <Grid item xs={2}>
+              <Paper elevation={3}>
+                <CategoryList categories={categories} />
+                <Divider />
+              </Paper>
+            </Grid>
+          </Grid>
+        </>
       }
       <Snackbar open={snackbarMessage !== ''} autoHideDuration={6000} onClose={onCloseSnackbar}>
         <Alert onClose={onCloseSnackbar} severity={snackbarSeverity}>{snackbarMessage}</Alert>

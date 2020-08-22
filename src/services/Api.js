@@ -104,3 +104,26 @@ export async function ProductAddApi(product) {
     }
     return false
 }
+
+export async function BatchAddApi(id, batch) {
+    const uri = process.env.REACT_APP_API_URI
+    const user = JSON.parse(localStorage.getItem('user'))
+    const headers = {
+        'Authorization': `Token ${user.token}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    }
+
+    const result = await fetch(`${uri}/products/${id}/batches/`, { method: 'POST', headers: headers, body: JSON.stringify({
+        initial: batch.initial,
+        current: batch.current,
+        price: batch.price,
+        purchase: batch.purchase.toISOString().split('T')[0],
+        limit: batch.limit.toISOString().split('T')[0],
+        provider: batch.provider
+    })})
+    if(result.status === 201) {
+        return await result.json()
+    }
+    return false
+}

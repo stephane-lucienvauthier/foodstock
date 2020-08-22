@@ -6,6 +6,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import { Paper } from '@material-ui/core'
 import Snackbar from '@material-ui/core/Snackbar'
 import Login from './components/Login'
+import BatchDelete from './components/BatchDelete'
 import BatchDialog from './components/BatchDialog'
 import CategoryDelete from './components/CategoryDelete'
 import CategoryDialog from './components/CategoryDialog'
@@ -18,6 +19,7 @@ import ProviderDialog from './components/ProviderDialog'
 import ProviderList from './components/ProviderList'
 import { 
   BatchAddApi,
+  BatchDeleteApi,
   CategoryAddApi,
   CategoryDeleteApi,
   CategoryListApi, 
@@ -43,10 +45,12 @@ function Alert(props) {
 
 export default function App() {
   const classes = useStyles()
+  const [batchDeleteDialogOpen, setBatchDeleteDialogOpen] = useState(false)
   const [batchEditDialogOpen, setBatchEditDialogOpen] = useState(false)
   const [categories, setCategories] = useState([])
   const [categoryDeleteDialogOpen, setCategoryDeleteDialogOpen] = useState(false)
   const [categoryEditDialogOpen, setCategoryEditDialogOpen] = useState(false)
+  const [currentBatch, setCurrentBatch] = useState(null)
   const [currentCategory, setCurrentCategory] = useState(null)
   const [currentProduct, setCurrentProduct] = useState(null)
   const [currentProvider, setCurrentProvider] = useState(null)
@@ -80,6 +84,33 @@ export default function App() {
     }
   }
 
+  const onBatchDeleteDialogOpen = (productId, id) => {
+    setCurrentBatch(id)
+    setCurrentProduct(productId)
+    setBatchDeleteDialogOpen(true)
+  }
+
+  const onBatchDeleteDialogClose = async (validation) => {
+    if (validation) {
+      const response = await BatchDeleteApi(currentProduct, currentBatch)
+      if (response) {
+        let p = products
+        let index = p.findIndex(x => x.id === currentProduct)
+        if(index  >= 0) {
+          let indexBatch = p[index].batches.findIndex(x => x.id === currentBatch)
+          p[index].batches.splice(indexBatch, 1)
+          setProducts(p)
+        }
+      } else {
+        setSnackbarSeverity('error')
+        setSnackbarMessage('An error was occured. Retry later.')
+      }
+    }
+    setCurrentProduct(null)
+    setCurrentBatch(null)
+    setBatchDeleteDialogOpen(false)
+  }
+
   const onBatchEditDialogOpen = (id, unit) => {
     setCurrentProduct(id)
     setCurrentUnit(unit)
@@ -91,7 +122,7 @@ export default function App() {
       const response = await BatchAddApi(currentProduct, batch)
       if (response) {
         let index = products.findIndex(x => x.id === currentProduct)
-        if(index  > 0) {
+        if(index  >= 0) {
           products[index].batches.push(response)
         }
       } else {
@@ -286,12 +317,13 @@ export default function App() {
             </Grid>
             <Grid item xs>
               <Paper elevation={3}>
-                <ProductList products={products} onEditDialogOpen={onProductEditDialogOpen} onDeleteDialogOpen={onProductDeleteDialogOpen} onBatchEditDialogOpen={onBatchEditDialogOpen} />
+                <ProductList products={products} onEditDialogOpen={onProductEditDialogOpen} onDeleteDialogOpen={onProductDeleteDialogOpen} onBatchEditDialogOpen={onBatchEditDialogOpen} onBatchDeleteDialogOpen={onBatchDeleteDialogOpen} />
               </Paper>
             </Grid>
           </Grid>
         </>
       }
+      <BatchDelete open={batchDeleteDialogOpen} onClose={onBatchDeleteDialogClose} />
       <BatchDialog open={batchEditDialogOpen} onClose={onBatchEditDialogClose} providers={providers} unit={currentUnit} />
       <CategoryDelete open={categoryDeleteDialogOpen} onClose={onCategoryDeleteDialogClose} />
       <CategoryDialog open={categoryEditDialogOpen} onClose={onCategoryEditDialogClose} />

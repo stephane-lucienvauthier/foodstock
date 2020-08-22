@@ -19,7 +19,7 @@ const useRowStyles = makeStyles({
 });
 
 function Row(props) {
-  const { product, onBatchEditDialogOpen, onDeleteDialogOpen } = props
+  const { product, onBatchEditDialogOpen, onDeleteDialogOpen, onBatchDeleteDialogOpen } = props
   const [open, setOpen] = React.useState(false)
   const classes = useRowStyles()
 
@@ -56,6 +56,7 @@ function Row(props) {
                     <TableCell align="right">Current Quantity</TableCell>
                     <TableCell align="right">Price</TableCell>
                     <TableCell align="right">Limit date</TableCell>
+                    <TableCell>Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -67,6 +68,7 @@ function Row(props) {
                       <TableCell align="right">{batch.current}</TableCell>
                       <TableCell align="right">{batch.price}</TableCell>
                       <TableCell align="right">{batch.limit}</TableCell>
+                      <TableCell><IconButton onClick={() => onBatchDeleteDialogOpen(product.id, batch.id)} color="secondary"><Icon>delete</Icon></IconButton></TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -80,7 +82,7 @@ function Row(props) {
 }
 
 export default function ProductList(props) {
-  const { products, onEditDialogOpen, onBatchEditDialogOpen, onDeleteDialogOpen } = props
+  const { products, onEditDialogOpen, onBatchEditDialogOpen, onDeleteDialogOpen, onBatchDeleteDialogOpen } = props
 
   return (
     <Table className="productsTable" size="small">
@@ -90,11 +92,12 @@ export default function ProductList(props) {
           <TableCell>Label</TableCell>
           <TableCell align="right">Unit</TableCell>
           <TableCell align="right">Category</TableCell>
+          <TableCell align="right">Actions</TableCell>
         </TableRow>
       </TableHead>
       <TableBody>
         {products.map((product) => (
-          <Row key={product.id} product={product} onBatchEditDialogOpen={onBatchEditDialogOpen} onDeleteDialogOpen={onDeleteDialogOpen} />
+          <Row key={product.id} product={product} onBatchEditDialogOpen={onBatchEditDialogOpen} onDeleteDialogOpen={onDeleteDialogOpen} onBatchDeleteDialogOpen={onBatchDeleteDialogOpen} />
         ))}
       </TableBody>
     </Table>

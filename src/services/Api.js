@@ -58,6 +58,22 @@ export async function ProviderListApi() {
     return false
 }
 
+export async function ProviderAddApi(provider) {
+    const uri = process.env.REACT_APP_API_URI
+    const user = JSON.parse(localStorage.getItem('user'))
+    const headers = {
+        'Authorization': `Token ${user.token}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    }
+
+    const result = await fetch(`${uri}/providers/`, { method: 'POST', headers: headers, body: JSON.stringify(provider) })
+    if(result.status === 201) {
+        return await result.json()
+    }
+    return false
+}
+
 export async function ProductListApi() {
     const uri = process.env.REACT_APP_API_URI
     const user = JSON.parse(localStorage.getItem('user'))

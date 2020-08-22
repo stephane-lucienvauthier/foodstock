@@ -37,12 +37,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Login(props) {
   const classes = useStyles()
+  const { login } = props
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [usernameErrorMessage, setUsernameErrorMessage] = useState('')
   const [passwordErrorMessage, setPasswordErrorMessage] = useState('')
 
-  function onLogin() {
+  const onLogin = () => {
     if (username === '') {
       setUsernameErrorMessage('The username cannot be empty.')
     }
@@ -52,11 +53,11 @@ export default function Login(props) {
     }
 
     if (username !== '' && password !== '') {
-      props.login(username, password)
+      login(username, password)
     }
   }
 
-  function onChange(event) {
+  const onChange = (event) => {
     if (event.keyCode === 13) {
       onLogin()
     } else {

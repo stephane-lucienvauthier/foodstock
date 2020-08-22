@@ -8,13 +8,15 @@ import Snackbar from '@material-ui/core/Snackbar'
 import Login from './components/Login'
 import CategoryDialog from './components/CategoryDialog'
 import CategoryList from './components/CategoryList'
+import ProviderDialog from './components/ProviderDialog'
 import ProviderList from './components/ProviderList'
 import ProductList from './components/ProductList'
 import { 
   LoginApi,
   CategoryListApi, 
   CategoryAddApi,
-  ProviderListApi, 
+  ProviderListApi,
+  ProviderAddApi,
   ProductListApi 
 } from './services/Api'
 
@@ -36,6 +38,7 @@ export default function App() {
   const [categories, setCategories] = useState([])
   const [categoryEditDialogOpen, setCategoryEditDialogOpen] = useState(false)
   const [providers, setProviders] = useState([])
+  const [providerEditDialogOpen, setProviderEditDialogOpen] = useState(false)
   const [products, setProducts] = useState([])
   const [snackbarSeverity, setSnackbarSeverity] = useState('success')
 
@@ -88,6 +91,25 @@ export default function App() {
     setCategoryEditDialogOpen(false)
   }
 
+  const onProviderEditDialogOpen = () => {
+    setProviderEditDialogOpen(true)
+  }
+
+  const onProviderEditDialogClose = async (provider) => {
+    if (provider !== undefined) {
+      const response = await ProviderAddApi(provider)
+      if (response) {
+        let p = providers
+        p.push(response)
+        setProviders(p)
+      } else {
+        setSnackbarSeverity('error')
+        setSnackbarMessage('An error was occured. Retry later.')
+      }
+    }
+    setProviderEditDialogOpen(false)
+  }
+
   const listProducts = async () => {
     const response = await ProductListApi()
     if (response) {
@@ -128,9 +150,9 @@ export default function App() {
           <Grid container spacing={3}>
             <Grid item xs={2}>
               <Paper elevation={3}>
-                <CategoryList categories={categories} onEditDialog={onCategoryEditDialogOpen} />
+                <CategoryList categories={categories} onEditDialogOpen={onCategoryEditDialogOpen} />
                 <Divider />
-                <ProviderList providers={providers} />
+                <ProviderList providers={providers} onEditDialogOpen={onProviderEditDialogOpen} />
               </Paper>
             </Grid>
             <Grid item xs>
@@ -142,6 +164,7 @@ export default function App() {
         </>
       }
       <CategoryDialog open={categoryEditDialogOpen} onClose={onCategoryEditDialogClose} />
+      <ProviderDialog open={providerEditDialogOpen} onClose={onProviderEditDialogClose} />
       <Snackbar open={snackbarMessage !== ''} autoHideDuration={6000} onClose={onCloseSnackbar}>
         <Alert onClose={onCloseSnackbar} severity={snackbarSeverity}>{snackbarMessage}</Alert>
       </Snackbar>

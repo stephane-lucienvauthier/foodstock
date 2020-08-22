@@ -7,6 +7,7 @@ import { Paper } from '@material-ui/core'
 import Snackbar from '@material-ui/core/Snackbar'
 import Login from './components/Login'
 import BatchDialog from './components/BatchDialog'
+import CategoryDelete from './components/CategoryDelete'
 import CategoryDialog from './components/CategoryDialog'
 import CategoryList from './components/CategoryList'
 import ProductDialog from './components/ProductDialog'
@@ -16,6 +17,7 @@ import ProviderList from './components/ProviderList'
 import { 
   BatchAddApi,
   CategoryAddApi,
+  CategoryDeleteApi,
   CategoryListApi, 
   LoginApi,
   ProductAddApi,
@@ -39,7 +41,9 @@ export default function App() {
   const classes = useStyles()
   const [batchEditDialogOpen, setBatchEditDialogOpen] = useState(false)
   const [categories, setCategories] = useState([])
+  const [categoryDeleteDialogOpen, setCategoryDeleteDialogOpen] = useState(false)
   const [categoryEditDialogOpen, setCategoryEditDialogOpen] = useState(false)
+  const [currentCategory, setCurrentCategory] = useState(null)
   const [currentProduct, setCurrentProduct] = useState(null)
   const [currentUnit, setCurrentUnit] = useState('')
   const [connected, setConnected] = useState(localStorage.getItem('user') !== null)
@@ -69,17 +73,6 @@ export default function App() {
     }
   }
 
-  const listCategories = async () => {
-    const response = await CategoryListApi()
-    if (response) {
-      setCategories(response)
-    } else {
-      setSnackbarSeverity('error')
-      setSnackbarMessage('An error was occured. Retry later.')
-      setCategories([])
-    }
-  }
-
   const onBatchEditDialogOpen = (id, unit) => {
     setCurrentProduct(id)
     setCurrentUnit(unit)
@@ -99,7 +92,42 @@ export default function App() {
         setSnackbarMessage('An error was occured. Retry later.')
       }
     }
+    setCurrentProduct(null)
     setBatchEditDialogOpen(false)
+  }
+
+  const listCategories = async () => {
+    const response = await CategoryListApi()
+    if (response) {
+      setCategories(response)
+    } else {
+      setSnackbarSeverity('error')
+      setSnackbarMessage('An error was occured. Retry later.')
+      setCategories([])
+    }
+  }
+
+  const onCategoryDeleteDialogOpen = (id) => {
+    setCurrentCategory(id)
+    setCategoryDeleteDialogOpen(true)
+  }
+
+  const onCategoryDeleteDialogClose = async (validation) => {
+    if (validation) {
+      const response = await CategoryDeleteApi(currentCategory)
+      if (response) {
+        let c = categories
+        let index = c.findIndex(x => x.id === currentCategory)
+        c.splice(index, 1);
+        setCategories(c)
+        await listProducts()
+      } else {
+        setSnackbarSeverity('error')
+        setSnackbarMessage('An error was occured. Retry later.')
+      }
+    }
+    setCurrentCategory(null)
+    setCategoryDeleteDialogOpen(false)
   }
 
   const onCategoryEditDialogOpen = () => {
@@ -199,7 +227,7 @@ export default function App() {
           <Grid container spacing={3}>
             <Grid item xs={2}>
               <Paper elevation={3}>
-                <CategoryList categories={categories} onEditDialogOpen={onCategoryEditDialogOpen} />
+                <CategoryList categories={categories} onEditDialogOpen={onCategoryEditDialogOpen} onDeleteDialogOpen={onCategoryDeleteDialogOpen} />
                 <Divider />
                 <ProviderList providers={providers} onEditDialogOpen={onProviderEditDialogOpen} />
               </Paper>
@@ -213,6 +241,7 @@ export default function App() {
         </>
       }
       <BatchDialog open={batchEditDialogOpen} onClose={onBatchEditDialogClose} providers={providers} unit={currentUnit} />
+      <CategoryDelete open={categoryDeleteDialogOpen} onClose={onCategoryDeleteDialogClose} />
       <CategoryDialog open={categoryEditDialogOpen} onClose={onCategoryEditDialogClose} />
       <ProductDialog open={productEditDialogOpen} onClose={onProductEditDialogClose} categories={categories} />
       <ProviderDialog open={providerEditDialogOpen} onClose={onProviderEditDialogClose} />

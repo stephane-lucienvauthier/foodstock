@@ -127,3 +127,17 @@ export async function BatchAddApi(id, batch) {
     }
     return false
 }
+
+export async function CategoryDeleteApi(id) {
+    const uri = process.env.REACT_APP_API_URI
+    const user = JSON.parse(localStorage.getItem('user'))
+    const headers = {
+        'Authorization': `Token ${user.token}`
+    }
+
+    const result = await fetch(`${uri}/categories/${id}`, { method: 'DELETE', headers: headers })
+    if(result.status === 204) {
+        return true
+    }
+    return false
+}

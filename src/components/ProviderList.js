@@ -14,6 +14,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ProviderList(props) {
+  const { providers } = props
   const classes = useStyles();
   const [selectedIndex, setSelectedIndex] = React.useState(0);
 
@@ -24,9 +25,9 @@ export default function ProviderList(props) {
   return (
     <div className={classes.root}>
       <List component="nav" subheader={<ListSubheader component="div" id="nested-list-subheader">Providers</ListSubheader>}>
-      
+
         <ListItem button selected={selectedIndex === 0} key="0" onClick={(event) => onChange(event, 0)}><ListItemText primary="All" /></ListItem>
-        { props.providers !== undefined && props.providers.map(provider => (
+        {providers !== undefined && providers.map(provider => (
           <ListItem button selected={selectedIndex === provider.id} key={provider.id} onClick={(event) => onChange(event, provider.id)}><ListItemText primary={`${provider.label} (${provider.city})`} /></ListItem>
         ))}
       </List>

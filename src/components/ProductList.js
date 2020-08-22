@@ -19,14 +19,15 @@ const useRowStyles = makeStyles({
 });
 
 function Row(props) {
+  const { product } = props
   const [open, setOpen] = React.useState(false)
   const classes = useRowStyles()
 
   return (
     <>
-      <TableRow key={props.product.id} className={classes.root}>
+      <TableRow key={product.id} className={classes.root}>
         <TableCell>
-          {(props.product.batches !== undefined && props.product.batches.length > 0) && (
+          {(product.batches !== undefined && product.batches.length > 0) && (
             <>
               <IconButton size="small" onClick={() => setOpen(!open)}>
                 {open ? <Icon>keyboard_arrow_up</Icon> : <Icon>keyboard_arrow_down</Icon>}
@@ -34,9 +35,9 @@ function Row(props) {
             </>
           )}
         </TableCell>
-        <TableCell component="th" scope="row">{props.product.label}</TableCell>
-        <TableCell align="right">{props.product.unit}</TableCell>
-        <TableCell align="right">{props.product.category}</TableCell>
+        <TableCell component="th" scope="row">{product.label}</TableCell>
+        <TableCell align="right">{product.unit}</TableCell>
+        <TableCell align="right">{product.category}</TableCell>
       </TableRow>
       <TableRow>
         <TableCell colSpan={6}>
@@ -54,7 +55,7 @@ function Row(props) {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {props.product.batches !== undefined && props.product.batches.map((batch) => (
+                  {product.batches !== undefined && product.batches.map((batch) => (
                     <TableRow key={batch.id}>
                       <TableCell component="th" scope="row">{batch.purchase}</TableCell>
                       <TableCell>{batch.provider}</TableCell>
@@ -75,21 +76,23 @@ function Row(props) {
 }
 
 export default function ProductList(props) {
+  const { products } = props
+
   return (
-      <Table className="productsTable" size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell></TableCell>
-            <TableCell>Label</TableCell>
-            <TableCell align="right">Unit</TableCell>
-            <TableCell align="right">Category</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {props.products.map((product) => (
-            <Row key={product.id} product={product} />
-          ))}
-        </TableBody>
-      </Table>
+    <Table className="productsTable" size="small">
+      <TableHead>
+        <TableRow>
+          <TableCell></TableCell>
+          <TableCell>Label</TableCell>
+          <TableCell align="right">Unit</TableCell>
+          <TableCell align="right">Category</TableCell>
+        </TableRow>
+      </TableHead>
+      <TableBody>
+        {products.map((product) => (
+          <Row key={product.id} product={product} />
+        ))}
+      </TableBody>
+    </Table>
   )
 }

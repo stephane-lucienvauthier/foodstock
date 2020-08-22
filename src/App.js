@@ -6,6 +6,7 @@ import MuiAlert from '@material-ui/lab/Alert';
 import { Paper } from '@material-ui/core'
 import Snackbar from '@material-ui/core/Snackbar'
 import Login from './components/Login'
+import BatchDialog from './components/BatchDialog'
 import CategoryDialog from './components/CategoryDialog'
 import CategoryList from './components/CategoryList'
 import ProductDialog from './components/ProductDialog'
@@ -13,6 +14,7 @@ import ProductList from './components/ProductList'
 import ProviderDialog from './components/ProviderDialog'
 import ProviderList from './components/ProviderList'
 import { 
+  BatchAddApi,
   CategoryAddApi,
   CategoryListApi, 
   LoginApi,
@@ -35,8 +37,11 @@ function Alert(props) {
 
 export default function App() {
   const classes = useStyles()
+  const [batchEditDialogOpen, setBatchEditDialogOpen] = useState(false)
   const [categories, setCategories] = useState([])
   const [categoryEditDialogOpen, setCategoryEditDialogOpen] = useState(false)
+  const [currentProduct, setCurrentProduct] = useState(null)
+  const [currentUnit, setCurrentUnit] = useState('')
   const [connected, setConnected] = useState(localStorage.getItem('user') !== null)
   const [products, setProducts] = useState([])
   const [productEditDialogOpen, setProductEditDialogOpen] = useState(false)
@@ -73,6 +78,28 @@ export default function App() {
       setSnackbarMessage('An error was occured. Retry later.')
       setCategories([])
     }
+  }
+
+  const onBatchEditDialogOpen = (id, unit) => {
+    setCurrentProduct(id)
+    setCurrentUnit(unit)
+    setBatchEditDialogOpen(true)
+  }
+
+  const onBatchEditDialogClose = async (batch) => {
+    if (batch !== undefined) {
+      const response = await BatchAddApi(currentProduct, batch)
+      if (response) {
+        let index = products.findIndex(x => x.id === currentProduct)
+        if(index  > 0) {
+          products[index].batches.push(response)
+        }
+      } else {
+        setSnackbarSeverity('error')
+        setSnackbarMessage('An error was occured. Retry later.')
+      }
+    }
+    setBatchEditDialogOpen(false)
   }
 
   const onCategoryEditDialogOpen = () => {
@@ -179,12 +206,13 @@ export default function App() {
             </Grid>
             <Grid item xs>
               <Paper elevation={3}>
-                <ProductList products={products} onEditDialogOpen={onProductEditDialogOpen} />
+                <ProductList products={products} onEditDialogOpen={onProductEditDialogOpen} onBatchEditDialogOpen={onBatchEditDialogOpen} />
               </Paper>
             </Grid>
           </Grid>
         </>
       }
+      <BatchDialog open={batchEditDialogOpen} onClose={onBatchEditDialogClose} providers={providers} unit={currentUnit} />
       <CategoryDialog open={categoryEditDialogOpen} onClose={onCategoryEditDialogClose} />
       <ProductDialog open={productEditDialogOpen} onClose={onProductEditDialogClose} categories={categories} />
       <ProviderDialog open={providerEditDialogOpen} onClose={onProviderEditDialogClose} />

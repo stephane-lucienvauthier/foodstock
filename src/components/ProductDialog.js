@@ -91,9 +91,6 @@ export default function ProductDialog(props) {
             {categories.map((category) => (
               <MenuItem key={category.id} value={category.id}>{category.label}</MenuItem>
             ))}
-            <MenuItem value={10}>Ten</MenuItem>
-            <MenuItem value={20}>Twenty</MenuItem>
-            <MenuItem value={30}>Thirty</MenuItem>
           </Select>
           <FormHelperText>{categoryErrorMessage}</FormHelperText>
         </FormControl>

@@ -19,7 +19,7 @@ const useRowStyles = makeStyles({
 });
 
 function Row(props) {
-  const { product, onBatchEditDialogOpen } = props
+  const { product, onBatchEditDialogOpen, onDeleteDialogOpen } = props
   const [open, setOpen] = React.useState(false)
   const classes = useRowStyles()
 
@@ -38,7 +38,10 @@ function Row(props) {
         <TableCell component="th" scope="row">{product.label}</TableCell>
         <TableCell align="right">{product.unit}</TableCell>
         <TableCell align="right">{product.category}</TableCell>
-        <TableCell><IconButton onClick={() => onBatchEditDialogOpen(product.id, product.unit)}><Icon>add</Icon></IconButton></TableCell>
+        <TableCell>
+          <IconButton onClick={() => onBatchEditDialogOpen(product.id, product.unit)} color="primary"><Icon>add</Icon></IconButton>
+          <IconButton onClick={() => onDeleteDialogOpen(product.id)} color="secondary"><Icon>delete</Icon></IconButton>
+        </TableCell>
       </TableRow>
       <TableRow>
         <TableCell colSpan={6}>
@@ -77,7 +80,7 @@ function Row(props) {
 }
 
 export default function ProductList(props) {
-  const { products, onEditDialogOpen, onBatchEditDialogOpen } = props
+  const { products, onEditDialogOpen, onBatchEditDialogOpen, onDeleteDialogOpen } = props
 
   return (
     <Table className="productsTable" size="small">
@@ -91,7 +94,7 @@ export default function ProductList(props) {
       </TableHead>
       <TableBody>
         {products.map((product) => (
-          <Row key={product.id} product={product} onBatchEditDialogOpen={onBatchEditDialogOpen} />
+          <Row key={product.id} product={product} onBatchEditDialogOpen={onBatchEditDialogOpen} onDeleteDialogOpen={onDeleteDialogOpen} />
         ))}
       </TableBody>
     </Table>

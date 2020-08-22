@@ -1,7 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import Box from '@material-ui/core/Box'
-import { Icon } from '@material-ui/core'
+import Icon from '@material-ui/core/Icon'
 import Collapse from '@material-ui/core/Collapse'
 import IconButton from '@material-ui/core/IconButton'
 import Table from '@material-ui/core/Table'
@@ -76,13 +76,13 @@ function Row(props) {
 }
 
 export default function ProductList(props) {
-  const { products } = props
+  const { products, onEditDialogOpen } = props
 
   return (
     <Table className="productsTable" size="small">
       <TableHead>
         <TableRow>
-          <TableCell></TableCell>
+          <TableCell><IconButton variant="contained" color="primary" onClick={onEditDialogOpen}><Icon>add</Icon></IconButton></TableCell>
           <TableCell>Label</TableCell>
           <TableCell align="right">Unit</TableCell>
           <TableCell align="right">Category</TableCell>

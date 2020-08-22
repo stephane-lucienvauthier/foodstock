@@ -8,16 +8,18 @@ import Snackbar from '@material-ui/core/Snackbar'
 import Login from './components/Login'
 import CategoryDialog from './components/CategoryDialog'
 import CategoryList from './components/CategoryList'
+import ProductDialog from './components/ProductDialog'
+import ProductList from './components/ProductList'
 import ProviderDialog from './components/ProviderDialog'
 import ProviderList from './components/ProviderList'
-import ProductList from './components/ProductList'
 import { 
-  LoginApi,
-  CategoryListApi, 
   CategoryAddApi,
-  ProviderListApi,
+  CategoryListApi, 
+  LoginApi,
+  ProductAddApi,
+  ProductListApi,
   ProviderAddApi,
-  ProductListApi 
+  ProviderListApi 
 } from './services/Api'
 
 const useStyles = makeStyles((theme) => ({
@@ -33,13 +35,14 @@ function Alert(props) {
 
 export default function App() {
   const classes = useStyles()
-  const [connected, setConnected] = useState(localStorage.getItem('user') !== null)
-  const [snackbarMessage, setSnackbarMessage] = useState('')
   const [categories, setCategories] = useState([])
   const [categoryEditDialogOpen, setCategoryEditDialogOpen] = useState(false)
+  const [connected, setConnected] = useState(localStorage.getItem('user') !== null)
+  const [products, setProducts] = useState([])
+  const [productEditDialogOpen, setProductEditDialogOpen] = useState(false)
   const [providers, setProviders] = useState([])
   const [providerEditDialogOpen, setProviderEditDialogOpen] = useState(false)
-  const [products, setProducts] = useState([])
+  const [snackbarMessage, setSnackbarMessage] = useState('')
   const [snackbarSeverity, setSnackbarSeverity] = useState('success')
 
   const onCloseSnackbar = () => {
@@ -91,6 +94,47 @@ export default function App() {
     setCategoryEditDialogOpen(false)
   }
 
+  const listProducts = async () => {
+    const response = await ProductListApi()
+    if (response) {
+      setProducts(response)
+    } else {
+      setSnackbarSeverity('error')
+      setSnackbarMessage('An error was occured. Retry later.')
+      setProducts([])
+    }
+  }
+
+  const onProductEditDialogOpen = () => {
+    setProductEditDialogOpen(true)
+  }
+
+  const onProductEditDialogClose = async (product) => {
+    if (product !== undefined) {
+      const response = await ProductAddApi(product)
+      if (response) {
+        let p = products
+        p.push(response)
+        setProducts(p)
+      } else {
+        setSnackbarSeverity('error')
+        setSnackbarMessage('An error was occured. Retry later.')
+      }
+    }
+    setProductEditDialogOpen(false)
+  }
+
+  const listProviders = async () => {
+    const response = await ProviderListApi()
+    if (response) {
+      setProviders(response)
+    } else {
+      setSnackbarSeverity('error')
+      setSnackbarMessage('An error was occured. Retry later.')
+      setProviders([])
+    }
+  }
+
   const onProviderEditDialogOpen = () => {
     setProviderEditDialogOpen(true)
   }
@@ -108,28 +152,6 @@ export default function App() {
       }
     }
     setProviderEditDialogOpen(false)
-  }
-
-  const listProducts = async () => {
-    const response = await ProductListApi()
-    if (response) {
-      setProducts(response)
-    } else {
-      setSnackbarSeverity('error')
-      setSnackbarMessage('An error was occured. Retry later.')
-      setProducts([])
-    }
-  }
-
-  const listProviders = async () => {
-    const response = await ProviderListApi()
-    if (response) {
-      setProviders(response)
-    } else {
-      setSnackbarSeverity('error')
-      setSnackbarMessage('An error was occured. Retry later.')
-      setProviders([])
-    }
   }
 
   useEffect(() => {
@@ -157,13 +179,14 @@ export default function App() {
             </Grid>
             <Grid item xs>
               <Paper elevation={3}>
-                <ProductList products={products} />
+                <ProductList products={products} onEditDialogOpen={onProductEditDialogOpen} />
               </Paper>
             </Grid>
           </Grid>
         </>
       }
       <CategoryDialog open={categoryEditDialogOpen} onClose={onCategoryEditDialogClose} />
+      <ProductDialog open={productEditDialogOpen} onClose={onProductEditDialogClose} categories={categories} />
       <ProviderDialog open={providerEditDialogOpen} onClose={onProviderEditDialogClose} />
       <Snackbar open={snackbarMessage !== ''} autoHideDuration={6000} onClose={onCloseSnackbar}>
         <Alert onClose={onCloseSnackbar} severity={snackbarSeverity}>{snackbarMessage}</Alert>

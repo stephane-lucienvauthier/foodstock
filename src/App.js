@@ -12,6 +12,7 @@ import CategoryDialog from './components/CategoryDialog'
 import CategoryList from './components/CategoryList'
 import ProductDialog from './components/ProductDialog'
 import ProductList from './components/ProductList'
+import ProviderDelete from './components/ProviderDelete'
 import ProviderDialog from './components/ProviderDialog'
 import ProviderList from './components/ProviderList'
 import { 
@@ -23,6 +24,7 @@ import {
   ProductAddApi,
   ProductListApi,
   ProviderAddApi,
+  ProviderDeleteApi,
   ProviderListApi 
 } from './services/Api'
 
@@ -45,11 +47,13 @@ export default function App() {
   const [categoryEditDialogOpen, setCategoryEditDialogOpen] = useState(false)
   const [currentCategory, setCurrentCategory] = useState(null)
   const [currentProduct, setCurrentProduct] = useState(null)
+  const [currentProvider, setCurrentProvider] = useState(null)
   const [currentUnit, setCurrentUnit] = useState('')
   const [connected, setConnected] = useState(localStorage.getItem('user') !== null)
   const [products, setProducts] = useState([])
   const [productEditDialogOpen, setProductEditDialogOpen] = useState(false)
   const [providers, setProviders] = useState([])
+  const [providerDeleteDialogOpen, setProviderDeleteDialogOpen] = useState(false)
   const [providerEditDialogOpen, setProviderEditDialogOpen] = useState(false)
   const [snackbarMessage, setSnackbarMessage] = useState('')
   const [snackbarSeverity, setSnackbarSeverity] = useState('success')
@@ -190,6 +194,29 @@ export default function App() {
     }
   }
 
+  const onProviderDeleteDialogOpen = (id) => {
+    setCurrentProvider(id)
+    setProviderDeleteDialogOpen(true)
+  }
+
+  const onProviderDeleteDialogClose = async (validation) => {
+    if (validation) {
+      const response = await ProviderDeleteApi(currentProvider)
+      if (response) {
+        let p = providers
+        let index = p.findIndex(x => x.id === currentProvider)
+        p.splice(index, 1);
+        setProviders(p)
+        await listProducts()
+      } else {
+        setSnackbarSeverity('error')
+        setSnackbarMessage('An error was occured. Retry later.')
+      }
+    }
+    setCurrentProvider(null)
+    setProviderDeleteDialogOpen(false)
+  }
+
   const onProviderEditDialogOpen = () => {
     setProviderEditDialogOpen(true)
   }
@@ -229,7 +256,7 @@ export default function App() {
               <Paper elevation={3}>
                 <CategoryList categories={categories} onEditDialogOpen={onCategoryEditDialogOpen} onDeleteDialogOpen={onCategoryDeleteDialogOpen} />
                 <Divider />
-                <ProviderList providers={providers} onEditDialogOpen={onProviderEditDialogOpen} />
+                <ProviderList providers={providers} onEditDialogOpen={onProviderEditDialogOpen} onDeleteDialogOpen={onProviderDeleteDialogOpen} />
               </Paper>
             </Grid>
             <Grid item xs>
@@ -244,6 +271,7 @@ export default function App() {
       <CategoryDelete open={categoryDeleteDialogOpen} onClose={onCategoryDeleteDialogClose} />
       <CategoryDialog open={categoryEditDialogOpen} onClose={onCategoryEditDialogClose} />
       <ProductDialog open={productEditDialogOpen} onClose={onProductEditDialogClose} categories={categories} />
+      <ProviderDelete open={providerDeleteDialogOpen} onClose={onProviderDeleteDialogClose} />
       <ProviderDialog open={providerEditDialogOpen} onClose={onProviderEditDialogClose} />
       <Snackbar open={snackbarMessage !== ''} autoHideDuration={6000} onClose={onCloseSnackbar}>
         <Alert onClose={onCloseSnackbar} severity={snackbarSeverity}>{snackbarMessage}</Alert>

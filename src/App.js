@@ -10,6 +10,7 @@ import BatchDialog from './components/BatchDialog'
 import CategoryDelete from './components/CategoryDelete'
 import CategoryDialog from './components/CategoryDialog'
 import CategoryList from './components/CategoryList'
+import ProductDelete from './components/ProductDelete'
 import ProductDialog from './components/ProductDialog'
 import ProductList from './components/ProductList'
 import ProviderDelete from './components/ProviderDelete'
@@ -22,6 +23,7 @@ import {
   CategoryListApi, 
   LoginApi,
   ProductAddApi,
+  ProductDeleteApi,
   ProductListApi,
   ProviderAddApi,
   ProviderDeleteApi,
@@ -51,6 +53,7 @@ export default function App() {
   const [currentUnit, setCurrentUnit] = useState('')
   const [connected, setConnected] = useState(localStorage.getItem('user') !== null)
   const [products, setProducts] = useState([])
+  const [productDeleteDialogOpen, setProductDeleteDialogOpen] = useState(false)
   const [productEditDialogOpen, setProductEditDialogOpen] = useState(false)
   const [providers, setProviders] = useState([])
   const [providerDeleteDialogOpen, setProviderDeleteDialogOpen] = useState(false)
@@ -122,7 +125,7 @@ export default function App() {
       if (response) {
         let c = categories
         let index = c.findIndex(x => x.id === currentCategory)
-        c.splice(index, 1);
+        c.splice(index, 1)
         setCategories(c)
         await listProducts()
       } else {
@@ -162,6 +165,28 @@ export default function App() {
       setSnackbarMessage('An error was occured. Retry later.')
       setProducts([])
     }
+  }
+
+  const onProductDeleteDialogOpen = (id) => {
+    setCurrentProduct(id)
+    setProductDeleteDialogOpen(true)
+  }
+
+  const onProductDeleteDialogClose = async (validation) => {
+    if (validation) {
+      const response = await ProductDeleteApi(currentProduct)
+      if (response) {
+        let p = products
+        let index = p.findIndex(x => x.id === currentProduct)
+        p.splice(index, 1)
+        setProducts(p)
+      } else {
+        setSnackbarSeverity('error')
+        setSnackbarMessage('An error was occured. Retry later.')
+      }
+    }
+    setCurrentProduct(null)
+    setProductDeleteDialogOpen(false)
   }
 
   const onProductEditDialogOpen = () => {
@@ -261,7 +286,7 @@ export default function App() {
             </Grid>
             <Grid item xs>
               <Paper elevation={3}>
-                <ProductList products={products} onEditDialogOpen={onProductEditDialogOpen} onBatchEditDialogOpen={onBatchEditDialogOpen} />
+                <ProductList products={products} onEditDialogOpen={onProductEditDialogOpen} onDeleteDialogOpen={onProductDeleteDialogOpen} onBatchEditDialogOpen={onBatchEditDialogOpen} />
               </Paper>
             </Grid>
           </Grid>
@@ -270,6 +295,7 @@ export default function App() {
       <BatchDialog open={batchEditDialogOpen} onClose={onBatchEditDialogClose} providers={providers} unit={currentUnit} />
       <CategoryDelete open={categoryDeleteDialogOpen} onClose={onCategoryDeleteDialogClose} />
       <CategoryDialog open={categoryEditDialogOpen} onClose={onCategoryEditDialogClose} />
+      <ProductDelete open={productDeleteDialogOpen} onClose={onProductDeleteDialogClose} />
       <ProductDialog open={productEditDialogOpen} onClose={onProductEditDialogClose} categories={categories} />
       <ProviderDelete open={providerDeleteDialogOpen} onClose={onProviderDeleteDialogClose} />
       <ProviderDialog open={providerEditDialogOpen} onClose={onProviderEditDialogClose} />

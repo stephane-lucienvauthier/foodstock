@@ -9,7 +9,7 @@ export default function ProviderDelete(props) {
   const { onClose, open } = props
 
   return (
-    <Dialog open={open} onClose={onClose}>
+    <Dialog open={open} onClose={onClose} disableBackdropClick>
       <DialogTitle>Delete a provider</DialogTitle>
       <DialogContent>
       </DialogContent>

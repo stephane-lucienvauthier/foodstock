@@ -4,6 +4,7 @@ import Icon from '@material-ui/core/Icon'
 import IconButton from '@material-ui/core/IconButton'
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction'
 import ListItemText from '@material-ui/core/ListItemText'
 import ListSubheader from '@material-ui/core/ListSubheader'
 
@@ -19,7 +20,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function ProviderList(props) {
-  const { providers, onEditDialogOpen } = props
+  const { providers, onEditDialogOpen, onDeleteDialogOpen } = props
   const classes = useStyles();
   const [selectedIndex, setSelectedIndex] = React.useState(0);
 
@@ -33,7 +34,11 @@ export default function ProviderList(props) {
 
         <ListItem button selected={selectedIndex === 0} key="0" onClick={(event) => onChange(event, 0)}><ListItemText primary="All" /></ListItem>
         {providers !== undefined && providers.map(provider => (
-          <ListItem button selected={selectedIndex === provider.id} key={provider.id} onClick={(event) => onChange(event, provider.id)}><ListItemText primary={`${provider.label} (${provider.city})`} /></ListItem>
+          <ListItem button selected={selectedIndex === provider.id} key={provider.id} onClick={(event) => onChange(event, provider.id)}><ListItemText primary={`${provider.label} (${provider.city})`} />
+            <ListItemSecondaryAction>
+              <IconButton size="small" onClick={() => onDeleteDialogOpen(provider.id)} color="secondary"><Icon>delete</Icon></IconButton>
+            </ListItemSecondaryAction>
+          </ListItem>
         ))}
       </List>
     </div>

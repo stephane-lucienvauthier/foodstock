@@ -19,7 +19,7 @@ const useRowStyles = makeStyles({
 });
 
 function Row(props) {
-  const { product, onBatchEditDialogOpen, onDeleteDialogOpen, onBatchDeleteDialogOpen } = props
+  const { product, onEditDialogOpen, onBatchEditDialogOpen, onDeleteDialogOpen, onBatchDeleteDialogOpen } = props
   const [open, setOpen] = React.useState(false)
   const classes = useRowStyles()
 
@@ -40,6 +40,7 @@ function Row(props) {
         <TableCell align="right">{product.category}</TableCell>
         <TableCell align="right">
           <IconButton onClick={() => onBatchEditDialogOpen(product.id, product.unit)} color="primary"><Icon>add</Icon></IconButton>
+          <IconButton onClick={() => onEditDialogOpen(product.id)} color="primary"><Icon>edit</Icon></IconButton>
           <IconButton onClick={() => onDeleteDialogOpen(product.id)} color="secondary"><Icon>delete</Icon></IconButton>
         </TableCell>
       </TableRow>
@@ -88,7 +89,7 @@ export default function ProductList(props) {
     <Table className="productsTable" size="small">
       <TableHead>
         <TableRow>
-          <TableCell><IconButton variant="contained" color="primary" onClick={onEditDialogOpen}><Icon>add</Icon></IconButton></TableCell>
+          <TableCell><IconButton variant="contained" color="primary" onClick={() => onEditDialogOpen(undefined)}><Icon>add</Icon></IconButton></TableCell>
           <TableCell>Label</TableCell>
           <TableCell align="right">Unit</TableCell>
           <TableCell align="right">Category</TableCell>
@@ -97,7 +98,7 @@ export default function ProductList(props) {
       </TableHead>
       <TableBody>
         {products.map((product) => (
-          <Row key={product.id} product={product} onBatchEditDialogOpen={onBatchEditDialogOpen} onDeleteDialogOpen={onDeleteDialogOpen} onBatchDeleteDialogOpen={onBatchDeleteDialogOpen} />
+          <Row key={product.id} product={product} onEditDialogOpen={onEditDialogOpen} onBatchEditDialogOpen={onBatchEditDialogOpen} onDeleteDialogOpen={onDeleteDialogOpen} onBatchDeleteDialogOpen={onBatchDeleteDialogOpen} />
         ))}
       </TableBody>
     </Table>

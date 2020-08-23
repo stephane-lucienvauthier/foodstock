@@ -35,7 +35,6 @@ export async function CategoryAddApi(category) {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
     }
-
     const result = await fetch(`${uri}/categories/`, { method: 'POST', headers: headers, body: JSON.stringify(category) })
     if(result.status === 201) {
         return await result.json()
@@ -147,6 +146,22 @@ export async function ProductAddApi(product) {
 
     const result = await fetch(`${uri}/products/`, { method: 'POST', headers: headers, body: JSON.stringify(product) })
     if(result.status === 201) {
+        return await result.json()
+    }
+    return false
+}
+
+export async function ProductUpdateApi(id, product) {
+    const uri = process.env.REACT_APP_API_URI
+    const user = JSON.parse(localStorage.getItem('user'))
+    const headers = {
+        'Authorization': `Token ${user.token}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    }
+
+    const result = await fetch(`${uri}/products/${id}`, { method: 'PUT', headers: headers, body: JSON.stringify(product) })
+    if(result.status === 200) {
         return await result.json()
     }
     return false

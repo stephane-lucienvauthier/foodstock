@@ -30,7 +30,7 @@ export default function CategoryList(props) {
 
   return (
     <div className={classes.root}>
-      <List component="nav" subheader={<ListSubheader component="div" id="nested-list-subheader">Categories<IconButton className={classes.addButton} color="primary" onClick={onEditDialogOpen}><Icon>add</Icon></IconButton></ListSubheader>}>
+      <List component="nav" subheader={<ListSubheader component="div" id="nested-list-subheader">Categories<IconButton className={classes.addButton} color="primary" onClick={() => onEditDialogOpen(undefined)}><Icon>add</Icon></IconButton></ListSubheader>}>
         <ListItem button selected={selectedIndex === 0} key="0" onClick={(event) => onChange(event, 0)}><ListItemText primary="All" /></ListItem>
         {categories !== undefined && categories.map(category => (
           <ListItem button selected={selectedIndex === category.id} key={category.id} onClick={(event) => onChange(event, category.id)}><ListItemText primary={category.label} />

@@ -26,6 +26,7 @@ import {
   CategoryListApi,
   LoginApi,
   ProductAddApi,
+  ProductUpdateApi,
   ProductDeleteApi,
   ProductListApi,
   ProviderAddApi,
@@ -244,22 +245,43 @@ export default function App() {
     setProductDeleteDialogOpen(false)
   }
 
-  const onProductEditDialogOpen = () => {
+  const onProductEditDialogOpen = (id) => {
+    if (id !== undefined) {
+      setCurrentProduct(id)
+    }
     setProductEditDialogOpen(true)
   }
 
   const onProductEditDialogClose = async (product) => {
     if (product !== undefined) {
-      const response = await ProductAddApi(product)
-      if (response) {
-        let p = products
-        p.push(response)
-        setProducts(p)
+      let response
+      if (currentProduct !== undefined) {
+        response = await ProductUpdateApi(currentProduct, product)
+        if (response) {
+          let p = products
+          let index = p.findIndex(x => x.id === currentProduct)
+          if (index >= 0) {
+            response.batches = p[index].batches 
+            p[index] = response
+            setProducts(p)
+          }
+        } else {
+          setSnackbarSeverity('error')
+          setSnackbarMessage('An error was occured. Retry later.')
+        }
       } else {
-        setSnackbarSeverity('error')
-        setSnackbarMessage('An error was occured. Retry later.')
+        response = await ProductAddApi(product)
+        if (response) {
+          let p = products
+          p.push(response)
+          setProducts(p)
+        } else {
+          setSnackbarSeverity('error')
+          setSnackbarMessage('An error was occured. Retry later.')
+        }
       }
     }
+    setCurrentProduct(undefined)
     setProductEditDialogOpen(false)
   }
 
@@ -300,7 +322,7 @@ export default function App() {
   const onProviderEditDialogOpen = async (id) => {
     if (id !== undefined) {
       const response = await ProviderGetApi(id)
-      if(response) {
+      if (response) {
         setCurrentProviderDetails(response)
         setCurrentProvider(id)
       } else {
@@ -380,7 +402,7 @@ export default function App() {
       <CategoryDelete open={categoryDeleteDialogOpen} onClose={onCategoryDeleteDialogClose} />
       <CategoryDialog open={categoryEditDialogOpen} onClose={onCategoryEditDialogClose} category={currentCategory !== undefined ? categories.find(x => x.id === currentCategory) : undefined} />
       <ProductDelete open={productDeleteDialogOpen} onClose={onProductDeleteDialogClose} />
-      <ProductDialog open={productEditDialogOpen} onClose={onProductEditDialogClose} categories={categories} />
+      <ProductDialog open={productEditDialogOpen} onClose={onProductEditDialogClose} categories={categories} product={currentProduct !== undefined ? products.find(x => x.id === currentProduct) : undefined} />
       <ProviderDelete open={providerDeleteDialogOpen} onClose={onProviderDeleteDialogClose} />
       <ProviderDialog open={providerEditDialogOpen} onClose={onProviderEditDialogClose} provider={currentProviderDetails} />
       <Snackbar open={snackbarMessage !== ''} autoHideDuration={6000} onClose={onCloseSnackbar}>

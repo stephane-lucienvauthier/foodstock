@@ -11,6 +11,7 @@ import BatchDialog from './components/BatchDialog'
 import CategoryDelete from './components/CategoryDelete'
 import CategoryDialog from './components/CategoryDialog'
 import CategoryList from './components/CategoryList'
+import Menu from './components/Menu'
 import ProductDelete from './components/ProductDelete'
 import ProductDialog from './components/ProductDialog'
 import ProductList from './components/ProductList'
@@ -386,6 +387,16 @@ export default function App() {
     setProviderEditDialogOpen(false)
   }
 
+  const onRoute = (event, menu) => {
+    switch (menu) {
+      case 'logout':
+        localStorage.clear()
+        window.location.reload(false);
+        break;
+      default:
+    }
+  }
+
   useEffect(() => {
     if (connected) {
       listCategories()
@@ -402,6 +413,12 @@ export default function App() {
       {
         connected && <>
           <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <Paper elevation={0}>
+                <Menu onRoute={onRoute} />
+              </Paper>
+
+            </Grid>
             <Grid item xs={2}>
               <Paper elevation={3}>
                 <CategoryList categories={categories} onEditDialogOpen={onCategoryEditDialogOpen} onDeleteDialogOpen={onCategoryDeleteDialogOpen} />

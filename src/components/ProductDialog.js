@@ -13,12 +13,12 @@ import Select from '@material-ui/core/Select'
 
 
 export default function ProductDialog(props) {
-  const { categories, onClose, open } = props
-  const [label, setLabel] = useState('')
+  const { product, categories, onClose, open } = props
+  const [label, setLabel] = useState(product !== undefined ? product.label : '')
   const [labelErrorMessage, setLabelErrorMessage] = useState('')
-  const [unit, setUnit] = useState('')
+  const [unit, setUnit] = useState(product !== undefined ? product.unit : '')
   const [unitErrorMessage, setUnitErrorMessage] = useState('')
-  const [category, setCategory] = useState('')
+  const [category, setCategory] = useState(product !== undefined ? categories.find(x => x.label === product.category).id : '')
   const [categoryErrorMessage, setCategoryErrorMessage] = useState('')
 
   const onChange = (event) => {
@@ -58,12 +58,10 @@ export default function ProductDialog(props) {
   }
 
   useEffect(() => {
-    if (!open) {
-      setLabel('')
-      setUnit('')
-      setCategory('')
-    }
-  }, [open]);
+    setLabel(product !== undefined ? product.label : '')
+    setUnit(product !== undefined ? product.unit : '')
+    setCategory(product !== undefined ? categories.find(x => x.label === product.category).id : '')
+  }, [product, categories]);
 
   return (
     <Dialog open={open} onClose={onClose} disableBackdropClick>

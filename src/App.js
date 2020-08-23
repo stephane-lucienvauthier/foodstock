@@ -19,6 +19,7 @@ import ProviderDialog from './components/ProviderDialog'
 import ProviderList from './components/ProviderList'
 import {
   BatchAddApi,
+  BatchUpdateApi,
   BatchDeleteApi,
   CategoryAddApi,
   CategoryUpdateApi,
@@ -116,26 +117,45 @@ export default function App() {
     setBatchDeleteDialogOpen(false)
   }
 
-  const onBatchEditDialogOpen = (id, unit) => {
-    setCurrentProduct(id)
+  const onBatchEditDialogOpen = (productId, id, unit) => {
+    if (id !== undefined) {
+      setCurrentBatch(id)
+    }
+    setCurrentProduct(productId)
     setCurrentUnit(unit)
     setBatchEditDialogOpen(true)
   }
 
   const onBatchEditDialogClose = async (batch) => {
-    if (batch !== undefined) {
-      const response = await BatchAddApi(currentProduct, batch)
-      if (response) {
-        let index = products.findIndex(x => x.id === currentProduct)
-        if (index >= 0) {
-          products[index].batches.push(response)
+    if (batch !== undefined && currentProduct !== undefined) {
+      let response
+      if (currentBatch !== undefined) {
+        response = await BatchUpdateApi(currentProduct, currentBatch, batch)
+        if (response) {
+          let index = products.findIndex(x => x.id === currentProduct)
+          if (index >= 0) {
+            let indexBatch = products[index].batches.findIndex(x => x.id === currentBatch)
+            products[index].batches[indexBatch] = response
+          }
+        } else {
+          setSnackbarSeverity('error')
+          setSnackbarMessage('An error was occured. Retry later.')
         }
       } else {
-        setSnackbarSeverity('error')
-        setSnackbarMessage('An error was occured. Retry later.')
+        response = await BatchAddApi(currentProduct, batch)
+        if (response) {
+          let index = products.findIndex(x => x.id === currentProduct)
+          if (index >= 0) {
+            products[index].batches.push(response)
+          }
+        } else {
+          setSnackbarSeverity('error')
+          setSnackbarMessage('An error was occured. Retry later.')
+        }
       }
     }
-    setCurrentProduct(null)
+    setCurrentBatch(undefined)
+    setCurrentProduct(undefined)
     setBatchEditDialogOpen(false)
   }
 
@@ -261,7 +281,7 @@ export default function App() {
           let p = products
           let index = p.findIndex(x => x.id === currentProduct)
           if (index >= 0) {
-            response.batches = p[index].batches 
+            response.batches = p[index].batches
             p[index] = response
             setProducts(p)
           }
@@ -398,7 +418,7 @@ export default function App() {
         </>
       }
       <BatchDelete open={batchDeleteDialogOpen} onClose={onBatchDeleteDialogClose} />
-      <BatchDialog open={batchEditDialogOpen} onClose={onBatchEditDialogClose} providers={providers} unit={currentUnit} />
+      <BatchDialog open={batchEditDialogOpen} onClose={onBatchEditDialogClose} providers={providers} unit={currentUnit} batch={currentBatch !== undefined && currentProduct !== undefined ? products.find(x => x.id === currentProduct).batches.find(x => x.id === currentBatch) : undefined} />
       <CategoryDelete open={categoryDeleteDialogOpen} onClose={onCategoryDeleteDialogClose} />
       <CategoryDialog open={categoryEditDialogOpen} onClose={onCategoryEditDialogClose} category={currentCategory !== undefined ? categories.find(x => x.id === currentCategory) : undefined} />
       <ProductDelete open={productDeleteDialogOpen} onClose={onProductDeleteDialogClose} />

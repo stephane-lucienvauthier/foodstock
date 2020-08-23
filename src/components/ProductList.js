@@ -39,7 +39,7 @@ function Row(props) {
         <TableCell align="right">{product.unit}</TableCell>
         <TableCell align="right">{product.category}</TableCell>
         <TableCell align="right">
-          <IconButton onClick={() => onBatchEditDialogOpen(product.id, product.unit)} color="primary"><Icon>add</Icon></IconButton>
+          <IconButton onClick={() => onBatchEditDialogOpen(product.id, undefined, product.unit)} color="primary"><Icon>add</Icon></IconButton>
           <IconButton onClick={() => onEditDialogOpen(product.id)} color="primary"><Icon>edit</Icon></IconButton>
           <IconButton onClick={() => onDeleteDialogOpen(product.id)} color="secondary"><Icon>delete</Icon></IconButton>
         </TableCell>
@@ -69,7 +69,10 @@ function Row(props) {
                       <TableCell align="right">{batch.current}</TableCell>
                       <TableCell align="right">{batch.price}</TableCell>
                       <TableCell align="right">{batch.limit}</TableCell>
-                      <TableCell align="right"><IconButton onClick={() => onBatchDeleteDialogOpen(product.id, batch.id)} color="secondary"><Icon>delete</Icon></IconButton></TableCell>
+                      <TableCell align="right">
+                      <IconButton onClick={() => onBatchEditDialogOpen(product.id, batch.id, product.unit)} color="primary"><Icon>edit</Icon></IconButton>
+                      <IconButton onClick={() => onBatchDeleteDialogOpen(product.id, batch.id)} color="secondary"><Icon>delete</Icon></IconButton>
+                      </TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

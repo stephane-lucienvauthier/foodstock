@@ -17,19 +17,20 @@ import ProductList from './components/ProductList'
 import ProviderDelete from './components/ProviderDelete'
 import ProviderDialog from './components/ProviderDialog'
 import ProviderList from './components/ProviderList'
-import { 
+import {
   BatchAddApi,
   BatchDeleteApi,
   CategoryAddApi,
+  CategoryUpdateApi,
   CategoryDeleteApi,
-  CategoryListApi, 
+  CategoryListApi,
   LoginApi,
   ProductAddApi,
   ProductDeleteApi,
   ProductListApi,
   ProviderAddApi,
   ProviderDeleteApi,
-  ProviderListApi 
+  ProviderListApi
 } from './services/Api'
 
 const useStyles = makeStyles((theme) => ({
@@ -51,9 +52,9 @@ export default function App() {
   const [categoryDeleteDialogOpen, setCategoryDeleteDialogOpen] = useState(false)
   const [categoryEditDialogOpen, setCategoryEditDialogOpen] = useState(false)
   const [currentBatch, setCurrentBatch] = useState(null)
-  const [currentCategory, setCurrentCategory] = useState(null)
-  const [currentProduct, setCurrentProduct] = useState(null)
-  const [currentProvider, setCurrentProvider] = useState(null)
+  const [currentCategory, setCurrentCategory] = useState(undefined)
+  const [currentProduct, setCurrentProduct] = useState(undefined)
+  const [currentProvider, setCurrentProvider] = useState(undefined)
   const [currentUnit, setCurrentUnit] = useState('')
   const [connected, setConnected] = useState(localStorage.getItem('user') !== null)
   const [products, setProducts] = useState([])
@@ -96,7 +97,7 @@ export default function App() {
       if (response) {
         let p = products
         let index = p.findIndex(x => x.id === currentProduct)
-        if(index  >= 0) {
+        if (index >= 0) {
           let indexBatch = p[index].batches.findIndex(x => x.id === currentBatch)
           p[index].batches.splice(indexBatch, 1)
           setProducts(p)
@@ -122,7 +123,7 @@ export default function App() {
       const response = await BatchAddApi(currentProduct, batch)
       if (response) {
         let index = products.findIndex(x => x.id === currentProduct)
-        if(index  >= 0) {
+        if (index >= 0) {
           products[index].batches.push(response)
         }
       } else {
@@ -168,22 +169,42 @@ export default function App() {
     setCategoryDeleteDialogOpen(false)
   }
 
-  const onCategoryEditDialogOpen = () => {
+  const onCategoryEditDialogOpen = (id) => {
+    if (id !== undefined) {
+      setCurrentCategory(id)
+    }
     setCategoryEditDialogOpen(true)
   }
 
   const onCategoryEditDialogClose = async (category) => {
     if (category !== undefined) {
-      const response = await CategoryAddApi(category)
-      if (response) {
-        let c = categories
-        c.push(response)
-        setCategories(c)
+      let response
+      if (currentCategory !== undefined) {
+        response = await CategoryUpdateApi(currentCategory, category)
+        if (response) {
+          let c = categories
+          let index = c.findIndex(x => x.id === currentCategory)
+          if (index >= 0) {
+            c[index] = response
+            setCategories(c)
+          }
+        } else {
+          setSnackbarSeverity('error')
+          setSnackbarMessage('An error was occured. Retry later.')
+        }
       } else {
-        setSnackbarSeverity('error')
-        setSnackbarMessage('An error was occured. Retry later.')
+        response = await CategoryAddApi(category)
+        if (response) {
+          let c = categories
+          c.push(response)
+          setCategories(c)
+        } else {
+          setSnackbarSeverity('error')
+          setSnackbarMessage('An error was occured. Retry later.')
+        }
       }
     }
+    setCurrentCategory(undefined)
     setCategoryEditDialogOpen(false)
   }
 
@@ -326,7 +347,7 @@ export default function App() {
       <BatchDelete open={batchDeleteDialogOpen} onClose={onBatchDeleteDialogClose} />
       <BatchDialog open={batchEditDialogOpen} onClose={onBatchEditDialogClose} providers={providers} unit={currentUnit} />
       <CategoryDelete open={categoryDeleteDialogOpen} onClose={onCategoryDeleteDialogClose} />
-      <CategoryDialog open={categoryEditDialogOpen} onClose={onCategoryEditDialogClose} />
+      <CategoryDialog open={categoryEditDialogOpen} onClose={onCategoryEditDialogClose} category={currentCategory !== undefined ? categories.find(x => x.id === currentCategory) : undefined} />
       <ProductDelete open={productDeleteDialogOpen} onClose={onProductDeleteDialogClose} />
       <ProductDialog open={productEditDialogOpen} onClose={onProductEditDialogClose} categories={categories} />
       <ProviderDelete open={providerDeleteDialogOpen} onClose={onProviderDeleteDialogClose} />

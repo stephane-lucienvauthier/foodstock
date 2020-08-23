@@ -190,6 +190,31 @@ export async function BatchAddApi(id, batch) {
     return false
 }
 
+export async function BatchUpdateApi(productId, id, batch) {
+    const uri = process.env.REACT_APP_API_URI
+    const user = JSON.parse(localStorage.getItem('user'))
+    const headers = {
+        'Authorization': `Token ${user.token}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    }
+
+    console.log(batch)
+
+    const result = await fetch(`${uri}/products/${productId}/batches/${id}`, { method: 'PUT', headers: headers, body: JSON.stringify({
+        initial: batch.initial,
+        current: batch.current,
+        price: batch.price,
+        purchase: batch.purchase.toISOString().split('T')[0],
+        limit: batch.limit.toISOString().split('T')[0],
+        provider: batch.provider
+    })})
+    if(result.status === 200) {
+        return await result.json()
+    }
+    return false
+}
+
 export async function CategoryDeleteApi(id) {
     const uri = process.env.REACT_APP_API_URI
     const user = JSON.parse(localStorage.getItem('user'))

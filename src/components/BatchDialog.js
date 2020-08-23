@@ -14,20 +14,19 @@ import MenuItem from '@material-ui/core/MenuItem'
 import { MuiPickersUtilsProvider, KeyboardDatePicker } from '@material-ui/pickers'
 import Select from '@material-ui/core/Select'
 
-
 export default function BatchDialog(props) {
-  const { unit, providers, onClose, open } = props
-  const [initial, setInitial] = useState('')
+  const { batch, unit, providers, onClose, open } = props
+  const [initial, setInitial] = useState(batch !== undefined ? batch.initial : '')
   const [initialErrorMessage, setInitialErrorMessage] = useState('')
-  const [current, setCurrent] = useState('')
+  const [current, setCurrent] = useState(batch !== undefined ? batch.current : '')
   const [currentErrorMessage, setCurrentErrorMessage] = useState('')
-  const [price, setPrice] = useState('')
+  const [price, setPrice] = useState(batch !== undefined ? batch.price : '')
   const [priceErrorMessage, setPriceErrorMessage] = useState('')
-  const [purchase, setPurchase] = useState(new Date(Date.now()))
+  const [purchase, setPurchase] = useState(batch !== undefined ? new Date(batch.purchase) : new Date(Date.now()))
   const [purchaseErrorMessage, setPurchaseErrorMessage] = useState('')
-  const [limit, setLimit] = useState(new Date(Date.now()))
+  const [limit, setLimit] = useState(batch !== undefined ? new Date(batch.limit) : new Date(Date.now()))
   const [limitErrorMessage, setLimitErrorMessage] = useState('')
-  const [provider, setProvider] = useState('')
+  const [provider, setProvider] = useState(batch !== undefined ? providers.find(x => x.label === batch.provider).id : '')
   const [providerErrorMessage, setProviderErrorMessage] = useState('')
 
   const onChange = (event) => {
@@ -93,15 +92,13 @@ export default function BatchDialog(props) {
   }
 
   useEffect(() => {
-    if (!open) {
-      setInitial('')
-      setCurrent('')
-      setPrice('')
-      setPurchase(new Date(Date.now()))
-      setLimit(new Date(Date.now()))
-      setProvider('')
-    }
-  }, [open]);
+      setInitial(batch !== undefined ? batch.initial : '')
+      setCurrent(batch !== undefined ? batch.current : '')
+      setPrice(batch !== undefined ? batch.price : '')
+      setPurchase(batch !== undefined ? new Date(batch.purchase) : new Date(Date.now()))
+      setLimit(batch !== undefined ? new Date(batch.limit) : new Date(Date.now()))
+      setProvider(batch !== undefined ? providers.find(x => x.label === batch.provider).id : '')
+  }, [batch, providers])
 
   return (
     <Dialog open={open} onClose={onClose} disableBackdropClick>

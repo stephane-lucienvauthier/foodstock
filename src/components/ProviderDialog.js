@@ -11,16 +11,16 @@ import InputLabel from '@material-ui/core/InputLabel'
 
 
 export default function ProviderDialog(props) {
-  const { onClose, open } = props
-  const [label, setLabel] = useState('')
+  const { onClose, open, provider } = props
+  const [label, setLabel] = useState(provider !== undefined ? provider.label : '')
   const [labelErrorMessage, setLabelErrorMessage] = useState('')
-  const [phone, setPhone] = useState('')
+  const [phone, setPhone] = useState(provider !== undefined ? provider.phone : '')
   const [phoneErrorMessage, setPhoneErrorMessage] = useState('')
-  const [address, setAddress] = useState('')
+  const [address, setAddress] = useState(provider !== undefined ? provider.address : '')
   const [addressErrorMessage, setAddressErrorMessage] = useState('')
-  const [zipcode, setZipcode] = useState('')
+  const [zipcode, setZipcode] = useState(provider !== undefined ? provider.zipcode : '')
   const [zipcodeErrorMessage, setZipcodeErrorMessage] = useState('')
-  const [city, setCity] = useState('')
+  const [city, setCity] = useState(provider !== undefined ? provider.city : '')
   const [cityErrorMessage, setCityErrorMessage] = useState('')
 
   const onChange = (event) => {
@@ -76,14 +76,12 @@ export default function ProviderDialog(props) {
   }
 
   useEffect(() => {
-    if (!open) {
-      setLabel('')
-      setPhone('')
-      setAddress('')
-      setZipcode('')
-      setCity('')
-    }
-  }, [open]);
+    setLabel(provider !== undefined ? provider.label : '')
+    setPhone(provider !== undefined ? provider.phone : '')
+    setAddress(provider !== undefined ? provider.address : '')
+    setZipcode(provider !== undefined ? provider.zipcode : '')
+    setCity(provider !== undefined ? provider.city : '')
+  }, [provider]);
 
   return (
     <Dialog open={open} onClose={onClose} disableBackdropClick>

@@ -36,6 +36,7 @@ export default function ProviderList(props) {
         {providers !== undefined && providers.map(provider => (
           <ListItem button selected={selectedIndex === provider.id} key={provider.id} onClick={(event) => onChange(event, provider.id)}><ListItemText primary={`${provider.label} (${provider.city})`} />
             <ListItemSecondaryAction>
+              <IconButton size="small" onClick={() => onEditDialogOpen(provider.id)} color="primary"><Icon>edit</Icon></IconButton>
               <IconButton size="small" onClick={() => onDeleteDialogOpen(provider.id)} color="secondary"><Icon>delete</Icon></IconButton>
             </ListItemSecondaryAction>
           </ListItem>

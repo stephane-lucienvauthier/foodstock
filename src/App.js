@@ -29,6 +29,8 @@ import {
   ProductDeleteApi,
   ProductListApi,
   ProviderAddApi,
+  ProviderGetApi,
+  ProviderUpdateApi,
   ProviderDeleteApi,
   ProviderListApi
 } from './services/Api'
@@ -55,6 +57,7 @@ export default function App() {
   const [currentCategory, setCurrentCategory] = useState(undefined)
   const [currentProduct, setCurrentProduct] = useState(undefined)
   const [currentProvider, setCurrentProvider] = useState(undefined)
+  const [currentProviderDetails, setCurrentProviderDetails] = useState(undefined)
   const [currentUnit, setCurrentUnit] = useState('')
   const [connected, setConnected] = useState(localStorage.getItem('user') !== null)
   const [products, setProducts] = useState([])
@@ -294,22 +297,50 @@ export default function App() {
     setProviderDeleteDialogOpen(false)
   }
 
-  const onProviderEditDialogOpen = () => {
-    setProviderEditDialogOpen(true)
-  }
-
-  const onProviderEditDialogClose = async (provider) => {
-    if (provider !== undefined) {
-      const response = await ProviderAddApi(provider)
-      if (response) {
-        let p = providers
-        p.push(response)
-        setProviders(p)
+  const onProviderEditDialogOpen = async (id) => {
+    if (id !== undefined) {
+      const response = await ProviderGetApi(id)
+      if(response) {
+        setCurrentProviderDetails(response)
+        setCurrentProvider(id)
       } else {
         setSnackbarSeverity('error')
         setSnackbarMessage('An error was occured. Retry later.')
       }
     }
+    setProviderEditDialogOpen(true)
+  }
+
+  const onProviderEditDialogClose = async (provider) => {
+    if (provider !== undefined) {
+      let response
+      if (currentProvider !== undefined) {
+        response = await ProviderUpdateApi(currentProvider, provider)
+        if (response) {
+          let p = providers
+          let index = p.findIndex(x => x.id === currentProvider)
+          if (index >= 0) {
+            p[index] = response
+            setProviders(p)
+          }
+        } else {
+          setSnackbarSeverity('error')
+          setSnackbarMessage('An error was occured. Retry later.')
+        }
+      } else {
+        response = await ProviderAddApi(provider)
+        if (response) {
+          let p = providers
+          p.push(response)
+          setProviders(p)
+        } else {
+          setSnackbarSeverity('error')
+          setSnackbarMessage('An error was occured. Retry later.')
+        }
+      }
+    }
+    setCurrentProviderDetails(undefined)
+    setCurrentProvider(undefined)
     setProviderEditDialogOpen(false)
   }
 
@@ -351,7 +382,7 @@ export default function App() {
       <ProductDelete open={productDeleteDialogOpen} onClose={onProductDeleteDialogClose} />
       <ProductDialog open={productEditDialogOpen} onClose={onProductEditDialogClose} categories={categories} />
       <ProviderDelete open={providerDeleteDialogOpen} onClose={onProviderDeleteDialogClose} />
-      <ProviderDialog open={providerEditDialogOpen} onClose={onProviderEditDialogClose} />
+      <ProviderDialog open={providerEditDialogOpen} onClose={onProviderEditDialogClose} provider={currentProviderDetails} />
       <Snackbar open={snackbarMessage !== ''} autoHideDuration={6000} onClose={onCloseSnackbar}>
         <Alert onClose={onCloseSnackbar} severity={snackbarSeverity}>{snackbarMessage}</Alert>
       </Snackbar>

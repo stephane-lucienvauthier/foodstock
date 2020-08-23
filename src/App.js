@@ -56,7 +56,7 @@ export default function App() {
   const [categories, setCategories] = useState([])
   const [categoryDeleteDialogOpen, setCategoryDeleteDialogOpen] = useState(false)
   const [categoryEditDialogOpen, setCategoryEditDialogOpen] = useState(false)
-  const [currentBatch, setCurrentBatch] = useState(null)
+  const [currentBatch, setCurrentBatch] = useState(undefined)
   const [currentCategory, setCurrentCategory] = useState(undefined)
   const [currentProduct, setCurrentProduct] = useState(undefined)
   const [currentProvider, setCurrentProvider] = useState(undefined)
@@ -113,8 +113,8 @@ export default function App() {
         setSnackbarMessage('An error was occured. Retry later.')
       }
     }
-    setCurrentProduct(null)
-    setCurrentBatch(null)
+    setCurrentProduct(undefined)
+    setCurrentBatch(undefined)
     setBatchDeleteDialogOpen(false)
   }
 
@@ -190,7 +190,7 @@ export default function App() {
         setSnackbarMessage('An error was occured. Retry later.')
       }
     }
-    setCurrentCategory(null)
+    setCurrentCategory(undefined)
     setCategoryDeleteDialogOpen(false)
   }
 
@@ -250,6 +250,7 @@ export default function App() {
   }
 
   const onProductDeleteDialogClose = async (validation) => {
+    console.log(validation)
     if (validation) {
       const response = await ProductDeleteApi(currentProduct)
       if (response) {
@@ -262,7 +263,7 @@ export default function App() {
         setSnackbarMessage('An error was occured. Retry later.')
       }
     }
-    setCurrentProduct(null)
+    setCurrentProduct(undefined)
     setProductDeleteDialogOpen(false)
   }
 
@@ -270,6 +271,7 @@ export default function App() {
     if (id !== undefined) {
       setCurrentProduct(id)
     }
+    console.log(products)
     setProductEditDialogOpen(true)
   }
 
@@ -293,6 +295,9 @@ export default function App() {
       } else {
         response = await ProductAddApi(product)
         if (response) {
+          if (response.batches === undefined) {
+            response.batches = []
+          }
           let p = products
           p.push(response)
           setProducts(p)
@@ -336,7 +341,7 @@ export default function App() {
         setSnackbarMessage('An error was occured. Retry later.')
       }
     }
-    setCurrentProvider(null)
+    setCurrentProvider(undefined)
     setProviderDeleteDialogOpen(false)
   }
 

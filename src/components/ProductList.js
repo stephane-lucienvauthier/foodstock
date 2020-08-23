@@ -38,7 +38,7 @@ function Row(props) {
         <TableCell component="th" scope="row">{product.label}</TableCell>
         <TableCell align="right">{product.unit}</TableCell>
         <TableCell align="right">{product.category}</TableCell>
-        <TableCell>
+        <TableCell align="right">
           <IconButton onClick={() => onBatchEditDialogOpen(product.id, product.unit)} color="primary"><Icon>add</Icon></IconButton>
           <IconButton onClick={() => onDeleteDialogOpen(product.id)} color="secondary"><Icon>delete</Icon></IconButton>
         </TableCell>
@@ -56,7 +56,7 @@ function Row(props) {
                     <TableCell align="right">Current Quantity</TableCell>
                     <TableCell align="right">Price</TableCell>
                     <TableCell align="right">Limit date</TableCell>
-                    <TableCell>Actions</TableCell>
+                    <TableCell align="right">Actions</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -68,7 +68,7 @@ function Row(props) {
                       <TableCell align="right">{batch.current}</TableCell>
                       <TableCell align="right">{batch.price}</TableCell>
                       <TableCell align="right">{batch.limit}</TableCell>
-                      <TableCell><IconButton onClick={() => onBatchDeleteDialogOpen(product.id, batch.id)} color="secondary"><Icon>delete</Icon></IconButton></TableCell>
+                      <TableCell align="right"><IconButton onClick={() => onBatchDeleteDialogOpen(product.id, batch.id)} color="secondary"><Icon>delete</Icon></IconButton></TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

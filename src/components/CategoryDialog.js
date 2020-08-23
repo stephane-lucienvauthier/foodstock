@@ -10,8 +10,8 @@ import Input from '@material-ui/core/Input'
 import InputLabel from '@material-ui/core/InputLabel'
 
 export default function CategoryDialog(props) {
-  const { onClose, open } = props
-  const [label, setLabel] = useState('')
+  const { onClose, open, category } = props
+  const [label, setLabel] = useState(category !== undefined ? category.label : '')
   const [labelErrorMessage, setLabelErrorMessage] = useState('')
 
   const onChange = (event) => {
@@ -32,10 +32,8 @@ export default function CategoryDialog(props) {
   }
 
   useEffect(() => {
-    if (!open) {
-      setLabel('')
-    }
-  }, [open]);
+    setLabel(category !== undefined ? category.label : '')
+  }, [category]);
 
   return (
     <Dialog open={open} onClose={onClose} disableBackdropClick>

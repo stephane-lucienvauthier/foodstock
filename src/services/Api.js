@@ -43,6 +43,22 @@ export async function CategoryAddApi(category) {
     return false
 }
 
+export async function CategoryUpdateApi(id, category) {
+    const uri = process.env.REACT_APP_API_URI
+    const user = JSON.parse(localStorage.getItem('user'))
+    const headers = {
+        'Authorization': `Token ${user.token}`,
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    }
+
+    const result = await fetch(`${uri}/categories/${id}`, { method: 'PUT', headers: headers, body: JSON.stringify(category) })
+    if(result.status === 200) {
+        return await result.json()
+    }
+    return false
+}
+
 export async function ProviderListApi() {
     const uri = process.env.REACT_APP_API_URI
     const user = JSON.parse(localStorage.getItem('user'))

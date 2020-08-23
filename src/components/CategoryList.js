@@ -35,6 +35,7 @@ export default function CategoryList(props) {
         {categories !== undefined && categories.map(category => (
           <ListItem button selected={selectedIndex === category.id} key={category.id} onClick={(event) => onChange(event, category.id)}><ListItemText primary={category.label} />
             <ListItemSecondaryAction>
+              <IconButton size="small" onClick={() => onEditDialogOpen(category.id)} color="primary"><Icon>edit</Icon></IconButton>
               <IconButton size="small" onClick={() => onDeleteDialogOpen(category.id)} color="secondary"><Icon>delete</Icon></IconButton>
             </ListItemSecondaryAction>
           </ListItem>
